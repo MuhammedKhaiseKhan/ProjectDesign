@@ -1,0 +1,903 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Financial Overview - Vermento Admin</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+      /* Base Styles */
+      * {
+          margin: 0;
+          padding: 0;
+          box-sizing: border-box;
+      }
+
+      body {
+          font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+          background: #000;
+          color: #fff;
+          min-height: 100vh;
+          display: flex;
+          flex-direction: column;
+      }
+
+      a {
+          text-decoration: none;
+          color: inherit;
+      }
+
+      /* Utility Classes */
+      .container {
+          max-width: 1200px;
+          margin-left: auto;
+          margin-right: auto;
+          padding-left: 1.5rem;
+          padding-right: 1.5rem;
+      }
+
+      .flex { display: flex; }
+      .flex-col { flex-direction: column; }
+      .items-center { align-items: center; }
+      .justify-between { justify-content: space-between; }
+      .justify-center { justify-content: center; }
+      .gap-2 { gap: 0.5rem; }
+      .gap-4 { gap: 1rem; }
+      .gap-6 { gap: 1.5rem; }
+      .p-4 { padding: 1rem; }
+      .p-6 { padding: 1.5rem; }
+      .py-4 { padding-top: 1rem; padding-bottom: 1rem; }
+      .px-4 { padding-left: 1rem; padding-right: 1rem; }
+      .px-6 { padding-left: 1.5rem; padding-right: 1.5rem; }
+      .pl-9 { padding-left: 2.25rem; }
+      .mb-2 { margin-bottom: 0.5rem; }
+      .mb-4 { margin-bottom: 1rem; }
+      .mb-6 { margin-bottom: 1.5rem; }
+      .mb-8 { margin-bottom: 2rem; }
+      .mr-2 { margin-right: 0.5rem; }
+      .mr-3 { margin-right: 0.75rem; }
+      .ml-2 { margin-left: 0.5rem; }
+      .-translate-y-1\/2 { transform: translateY(-50%); }
+
+      .relative { position: relative; }
+      .absolute { position: absolute; }
+      .left-3 { left: 0.75rem; }
+      .top-1\/2 { top: 50%; }
+
+      .w-full { width: 100%; }
+      .w-64 { width: 16rem; }
+      .w-10 { width: 2.5rem; }
+      .w-12 { width: 3rem; }
+      .h-4 { height: 1rem; }
+      .h-6 { height: 1.5rem; }
+      .h-8 { height: 2rem; }
+      .h-9 { height: 2.25rem; }
+      .h-10 { height: 2.5rem; }
+      .h-12 { height: 3rem; }
+
+      .text-xs { font-size: 0.75rem; line-height: 1rem; }
+      .text-sm { font-size: 0.875rem; line-height: 1.25rem; }
+      .text-base { font-size: 1rem; line-height: 1.5rem; }
+      .text-lg { font-size: 1.125rem; line-height: 1.75rem; }
+      .text-xl { font-size: 1.25rem; line-height: 1.75rem; }
+      .text-2xl { font-size: 1.5rem; line-height: 2rem; }
+      .text-3xl { font-size: 1.875rem; line-height: 2.25rem; }
+      .text-4xl { font-size: 2.25rem; line-height: 2.5rem; }
+
+      .font-bold { font-weight: 700; }
+      .font-semibold { font-weight: 600; }
+      .font-medium { font-weight: 500; }
+
+      .text-white { color: #fff; }
+      .text-gray-400 { color: #9ca3af; }
+      .text-gray-500 { color: #6b7280; }
+      .text-gray-600 { color: #4b5563; }
+      .text-green-400 { color: #34d399; }
+      .text-red-400 { color: #f87171; }
+      .text-yellow-400 { color: #fbbf24; }
+      .text-blue-400 { color: #60a5fa; }
+
+      .bg-gray-800 { background-color: #1f2937; }
+      .bg-gray-900 { background-color: #111827; }
+      .bg-green-600 { background-color: #059669; }
+      .bg-red-600 { background-color: #dc2626; }
+      .bg-blue-600 { background-color: #2563eb; }
+      .bg-yellow-600 { background-color: #d97706; }
+
+      .border { border-width: 1px; border-style: solid; border-color: #333; }
+      .border-b { border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #333; }
+      .border-gray-700 { border-color: #374151; }
+
+      .rounded-full { border-radius: 9999px; }
+      .rounded-md { border-radius: 0.375rem; }
+      .rounded-lg { border-radius: 0.5rem; }
+
+      .text-center { text-align: center; }
+
+      /* Dashboard Layout */
+      .dashboard-layout {
+          display: flex;
+          min-height: 100vh;
+          width: 100%;
+      }
+
+      /* Sidebar Styles */
+      .sidebar {
+          position: fixed;
+          left: 0;
+          top: 0;
+          bottom: 0;
+          width: 16rem;
+          background-color: #111;
+          border-right: 1px solid #333;
+          padding-top: 1.5rem;
+          z-index: 20;
+          display: flex;
+          flex-direction: column;
+          align-items: flex-start;
+      }
+
+      .sidebar-logo {
+          font-size: 1.5rem;
+          font-weight: 700;
+          color: #fff;
+          margin-bottom: 2rem;
+          padding-left: 1rem;
+          display: block;
+      }
+      .sidebar-logo .faded {
+          color: #888;
+      }
+
+      .sidebar-nav {
+          list-style: none;
+          width: 100%;
+          padding: 0;
+          margin: 0;
+          flex-grow: 1;
+      }
+
+      .sidebar-nav-item {
+          margin-bottom: 0.5rem;
+          width: 100%;
+      }
+
+      .sidebar-nav-link {
+          display: flex;
+          align-items: center;
+          padding: 0.75rem 1rem;
+          color: #aaa;
+          font-size: 0.875rem;
+          font-weight: 500;
+          border-radius: 0.375rem;
+          transition: background-color 0.2s, color 0.2s;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          justify-content: flex-start;
+      }
+
+      .sidebar-nav-link:hover {
+          background-color: #222;
+          color: #fff;
+      }
+
+      .sidebar-nav-link.active {
+          background-color: #222;
+          color: #fff;
+      }
+
+      .sidebar-nav-link svg {
+          height: 1.25rem;
+          width: 1.25rem;
+          margin-right: 0.75rem;
+          flex-shrink: 0;
+          color: #aaa;
+      }
+
+      .sidebar-nav-link span {
+          display: inline;
+      }
+
+      .sidebar-footer {
+          width: 100%;
+          padding: 1rem;
+          border-top: 1px solid #333;
+          display: flex;
+          flex-direction: column;
+          align-items: flex-start;
+      }
+
+      /* Main Content Area */
+      .main-content {
+          flex: 1;
+          margin-left: 16rem;
+          padding: 1.5rem;
+          overflow-y: auto;
+      }
+
+      /* Header Styles */
+      .header {
+          border-bottom: 1px solid #333;
+          background-color: #111;
+          padding: 1.5rem;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          position: sticky;
+          top: 0;
+          z-index: 10;
+          margin-left: 16rem;
+      }
+
+      .nav-buttons {
+          display: flex;
+          gap: 12px;
+          align-items: center;
+      }
+
+      /* Avatar Styles */
+      .avatar {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          border-radius: 9999px;
+          overflow: hidden;
+          position: relative;
+          flex-shrink: 0;
+      }
+      .avatar-image {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+      }
+      .avatar-fallback {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 100%;
+          height: 100%;
+          background-color: #333;
+          color: #eee;
+          font-weight: 600;
+      }
+
+      /* Input Styles */
+      .input {
+          display: flex;
+          height: 2.5rem;
+          width: 100%;
+          border-radius: 0.375rem;
+          border: 1px solid #444;
+          background-color: #222;
+          padding: 0 0.75rem;
+          font-size: 0.875rem;
+          box-shadow: none;
+          transition: border-color 0.2s, box-shadow 0.2s;
+          color: #fff;
+      }
+      .input:focus-visible {
+          outline: none;
+          border-color: #fff;
+          background: #333;
+          box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
+      }
+      .input::placeholder {
+          color: #666;
+      }
+
+      /* Button Styles */
+      .btn {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          white-space: nowrap;
+          border-radius: 0.375rem;
+          font-size: 0.875rem;
+          font-weight: 500;
+          height: 2.5rem;
+          padding: 0 1rem;
+          cursor: pointer;
+          transition: all 0.2s ease-in-out;
+          border: none;
+      }
+      .btn-ghost {
+          background-color: transparent;
+          color: #d1d5db;
+      }
+      .btn-ghost:hover {
+          background-color: #222;
+          color: #fff;
+      }
+      .btn-primary {
+          background-color: #fff;
+          color: #000;
+      }
+      .btn-primary:hover {
+          background-color: #f0f0f0;
+      }
+
+      /* Financial Cards */
+      .financial-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+          gap: 1.5rem;
+          margin-bottom: 2rem;
+      }
+
+      .financial-card {
+          background-color: #1a1a1a;
+          border-radius: 0.5rem;
+          border: 1px solid #333;
+          padding: 2rem;
+          transition: all 0.3s ease-in-out;
+          position: relative;
+          overflow: hidden;
+      }
+
+      .financial-card:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 10px 20px rgba(255, 255, 255, 0.1);
+      }
+
+      .financial-card::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          height: 4px;
+          background: linear-gradient(90deg, #34d399, #60a5fa, #fbbf24);
+      }
+
+      .financial-icon {
+          width: 4rem;
+          height: 4rem;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          margin-bottom: 1.5rem;
+      }
+
+      .financial-value {
+          font-size: 2.5rem;
+          font-weight: 700;
+          color: #fff;
+          margin-bottom: 0.5rem;
+      }
+
+      .financial-label {
+          font-size: 1rem;
+          color: #9ca3af;
+          margin-bottom: 0.5rem;
+      }
+
+      .financial-change {
+          font-size: 0.875rem;
+          font-weight: 500;
+          display: flex;
+          align-items: center;
+          gap: 0.25rem;
+      }
+
+      .financial-change.positive {
+          color: #34d399;
+      }
+
+      .financial-change.negative {
+          color: #f87171;
+      }
+
+      /* Charts Container */
+      .charts-container {
+          display: grid;
+          grid-template-columns: 2fr 1fr;
+          gap: 2rem;
+          margin-bottom: 2rem;
+      }
+
+      .chart-card {
+          background-color: #1a1a1a;
+          border-radius: 0.5rem;
+          border: 1px solid #333;
+          padding: 2rem;
+          transition: all 0.3s ease-in-out;
+      }
+
+      .chart-card:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 10px 20px rgba(255, 255, 255, 0.1);
+      }
+
+      .chart-header {
+          margin-bottom: 1.5rem;
+      }
+
+      .chart-title {
+          font-size: 1.5rem;
+          font-weight: 600;
+          color: #fff;
+          margin-bottom: 0.5rem;
+      }
+
+      .chart-description {
+          font-size: 0.875rem;
+          color: #9ca3af;
+      }
+
+      /* Transaction Table */
+      .table-container {
+          background-color: #1a1a1a;
+          border-radius: 0.5rem;
+          border: 1px solid #333;
+          overflow: hidden;
+      }
+
+      .table {
+          width: 100%;
+          border-collapse: collapse;
+      }
+
+      .table th,
+      .table td {
+          padding: 1rem;
+          text-align: left;
+          border-bottom: 1px solid #333;
+      }
+
+      .table th {
+          background-color: #111;
+          font-weight: 600;
+          color: #fff;
+          font-size: 0.875rem;
+      }
+
+      .table td {
+          color: #d1d5db;
+      }
+
+      .table tbody tr:hover {
+          background-color: #222;
+      }
+
+      .table tbody tr:last-child td {
+          border-bottom: none;
+      }
+
+      .transaction-type {
+          display: inline-flex;
+          align-items: center;
+          padding: 0.25rem 0.75rem;
+          border-radius: 9999px;
+          font-size: 0.75rem;
+          font-weight: 500;
+      }
+
+      .transaction-income {
+          background-color: rgba(34, 197, 94, 0.1);
+          color: #22c55e;
+      }
+
+      .transaction-expense {
+          background-color: rgba(239, 68, 68, 0.1);
+          color: #ef4444;
+      }
+
+      /* Mobile Responsiveness */
+      @media (max-width: 768px) {
+          .sidebar {
+              width: 100%;
+              position: relative;
+              height: auto;
+              border-right: none;
+              padding-bottom: 1rem;
+          }
+
+          .main-content, .header {
+              margin-left: 0;
+          }
+
+          .financial-grid {
+              grid-template-columns: 1fr;
+          }
+
+          .charts-container {
+              grid-template-columns: 1fr;
+          }
+
+          .table-container {
+              overflow-x: auto;
+          }
+
+          .table {
+              min-width: 700px;
+          }
+      }
+  </style>
+</head>
+<body>
+    <div class="dashboard-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <a href="admin-dashboard.html" class="sidebar-logo">Ver<span class="faded">mento</span></a>
+            <nav class="sidebar-nav">
+                <div class="sidebar-nav-item">
+                    <a href="admin-dashboard.html" class="sidebar-nav-link">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                        <span>Dashboard</span>
+                    </a>
+                </div>
+                <div class="sidebar-nav-item">
+                    <a href="user-management.html" class="sidebar-nav-link">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                        <span>User Management</span>
+                    </a>
+                </div>
+                <div class="sidebar-nav-item">
+                    <a href="mentor-management.html" class="sidebar-nav-link">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                        <span>Mentor Management</span>
+                    </a>
+                </div>
+                <div class="sidebar-nav-item">
+                    <a href="booking-management.html" class="sidebar-nav-link">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/><path d="M12 16h.01"/><path d="M8 16h.01"/><path d="M16 16h.01"/><path d="M12 12h.01"/><path d="M8 12h.01"/><path d="M16 12h.01"/></svg>
+                        <span>View & Manage Bookings</span>
+                    </a>
+                </div>
+                <div class="sidebar-nav-item">
+                    <a href="financial-overview.html" class="sidebar-nav-link active">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h12a2 2 0 0 1 0 4H5a2 2 0 0 0 0 4h12a2 2 0 0 0 2-2v-3"/><path d="M10 12H7a2 2 0 0 0-2 2v4a2 2 0 0 0 2 2h3"/></svg>
+                        <span>Financial Overview</span>
+                    </a>
+                </div>
+            </nav>
+            <div class="sidebar-footer">
+                <div class="sidebar-nav-item">
+                    <a href="/admin-profile.html" class="sidebar-nav-link">
+                        <span class="avatar h-6 w-6">
+                            <img src="https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=400" alt="Admin Profile" class="avatar-image" />
+                            <span class="avatar-fallback">AS</span>
+                        </span>
+                        <span>Admin Smith</span>
+                    </a>
+                </div>
+                <div class="sidebar-nav-item">
+                    <a href="/logout" class="sidebar-nav-link">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="17 16 22 12 17 8"/><line x1="22" x2="10" y1="12" y2="12"/></svg>
+                        <span>Logout</span>
+                    </a>
+                </div>
+            </div>
+        </aside>
+
+        <div style="flex: 1; display: flex; flex-direction: column;">
+            <!-- Header -->
+            <header class="header">
+                <div class="relative w-64">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                    <input type="text" placeholder="Search transactions..." class="input pl-9" id="globalSearch" />
+                </div>
+                <div class="nav-buttons">
+                    <a href="#" class="btn-ghost">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-6 w-6 text-white"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.36 14H13.64a2 2 0 0 1 2 1.73 2 2 0 0 0 2 1.73H6.36a2 2 0 0 0 2 1.73 2 2 0 0 1 2-1.73Z"/></svg>
+                    </a>
+                    <span class="avatar h-9 w-9">
+                        <img src="https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=400" alt="Admin Profile" class="avatar-image" />
+                        <span class="avatar-fallback">AS</span>
+                    </span>
+                    <span class="font-medium text-white">Admin Smith</span>
+                </div>
+            </header>
+
+            <!-- Main Content Area -->
+            <main class="main-content">
+                <div class="flex items-center justify-between mb-8">
+                    <h1 class="text-3xl font-bold text-white">Financial Overview</h1>
+                    <div class="flex items-center gap-4">
+                        <button class="btn btn-primary">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+                            Export Report
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Financial Overview Cards -->
+                <div class="financial-grid">
+                    <div class="financial-card">
+                        <div class="financial-icon bg-green-600">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-white"><path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h12a2 2 0 0 1 0 4H5a2 2 0 0 0 0 4h12a2 2 0 0 0 2-2v-3"/><path d="M10 12H7a2 2 0 0 0-2 2v4a2 2 0 0 0 2 2h3"/></svg>
+                        </div>
+                        <div class="financial-value">₹4,87,250</div>
+                        <div class="financial-label">Company Wallet Balance</div>
+                        <div class="financial-change positive">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                            +12.5% from last month
+                        </div>
+                    </div>
+
+                    <div class="financial-card">
+                        <div class="financial-icon bg-blue-600">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-white"><line x1="12" x2="12" y1="1" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                        </div>
+                        <div class="financial-value">₹18,750</div>
+                        <div class="financial-label">Monthly Revenue</div>
+                        <div class="financial-change positive">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                            +8.2% from last month
+                        </div>
+                    </div>
+
+                    <div class="financial-card">
+                        <div class="financial-icon bg-yellow-600">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-white"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                        </div>
+                        <div class="financial-value">₹2,34,890</div>
+                        <div class="financial-label">Total Service Fees Collected</div>
+                        <div class="financial-change positive">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                            +15.7% from last month
+                        </div>
+                    </div>
+
+                    <div class="financial-card">
+                        <div class="financial-icon bg-red-600">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-white"><path d="M17 9V7a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2m2 4h10a2 2 0 0 0 2-2v-6a2 2 0 0 0-2-2H9a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2Zm7-5a2 2 0 1 1-4 0 2 2 0 0 1 4 0Z"/></svg>
+                        </div>
+                        <div class="financial-value">₹45,670</div>
+                        <div class="financial-label">Monthly Expenses</div>
+                        <div class="financial-change negative">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                            +3.1% from last month
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Charts Section -->
+                <div class="charts-container">
+                    <!-- Revenue Trend Chart -->
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h3 class="chart-title">Revenue & Turnover Trend</h3>
+                            <p class="chart-description">Monthly performance over the last 12 months</p>
+                        </div>
+                        <div style="height: 400px;">
+                            <canvas id="revenueChart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Revenue Distribution -->
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h3 class="chart-title">Revenue Distribution</h3>
+                            <p class="chart-description">Service fees vs Platform revenue</p>
+                        </div>
+                        <div style="height: 400px; display: flex; align-items: center; justify-content: center;">
+                            <div style="position: relative; width: 300px; height: 300px;">
+                                <canvas id="distributionChart"></canvas>
+                                <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center;">
+                                    <div style="font-size: 1.5rem; font-weight: bold; color: #fff;">₹4.87L</div>
+                                    <div style="font-size: 0.875rem; color: #9ca3af;">Total Balance</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Transactions -->
+                <div class="mb-8">
+                    <h2 class="text-2xl font-semibold text-white mb-6">Recent Transactions</h2>
+                    <div class="table-container">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Transaction ID</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                    <th>Date</th>
+                                    <th>Amount</th>
+                                    <th>Balance</th>
+                                </tr>
+                            </thead>
+                            <tbody id="transactionsTableBody">
+                                <tr>
+                                    <td class="font-medium text-white">#TXN001</td>
+                                    <td>
+                                        <span class="transaction-type transaction-income">Service Fee</span>
+                                    </td>
+                                    <td class="text-gray-400">Session booking fee - John Doe & Sarah Johnson</td>
+                                    <td class="text-gray-400">Dec 15, 2024</td>
+                                    <td class="font-medium text-green-400">+₹100</td>
+                                    <td class="font-medium text-white">₹4,87,250</td>
+                                </tr>
+                                <tr>
+                                    <td class="font-medium text-white">#TXN002</td>
+                                    <td>
+                                        <span class="transaction-type transaction-income">Service Fee</span>
+                                    </td>
+                                    <td class="text-gray-400">Session booking fee - Michael Wilson & Emily Brown</td>
+                                    <td class="text-gray-400">Dec 15, 2024</td>
+                                    <td class="font-medium text-green-400">+₹50</td>
+                                    <td class="font-medium text-white">₹4,87,150</td>
+                                </tr>
+                                <tr>
+                                    <td class="font-medium text-white">#TXN003</td>
+                                    <td>
+                                        <span class="transaction-type transaction-expense">Platform Expense</span>
+                                    </td>
+                                    <td class="text-gray-400">Server hosting and maintenance costs</td>
+                                    <td class="text-gray-400">Dec 14, 2024</td>
+                                    <td class="font-medium text-red-400">-₹15,000</td>
+                                    <td class="font-medium text-white">₹4,87,100</td>
+                                </tr>
+                                <tr>
+                                    <td class="font-medium text-white">#TXN004</td>
+                                    <td>
+                                        <span class="transaction-type transaction-income">Service Fee</span>
+                                    </td>
+                                    <td class="text-gray-400">Session booking fee - David Lee & Sarah Johnson</td>
+                                    <td class="text-gray-400">Dec 14, 2024</td>
+                                    <td class="font-medium text-green-400">+₹200</td>
+                                    <td class="font-medium text-white">₹5,02,100</td>
+                                </tr>
+                                <tr>
+                                    <td class="font-medium text-white">#TXN005</td>
+                                    <td>
+                                        <span class="transaction-type transaction-expense">Marketing</span>
+                                    </td>
+                                    <td class="text-gray-400">Digital marketing campaign expenses</td>
+                                    <td class="text-gray-400">Dec 13, 2024</td>
+                                    <td class="font-medium text-red-400">-₹25,000</td>
+                                    <td class="font-medium text-white">₹5,01,900</td>
+                                </tr>
+                                <tr>
+                                    <td class="font-medium text-white">#TXN006</td>
+                                    <td>
+                                        <span class="transaction-type transaction-income">Service Fee</span>
+                                    </td>
+                                    <td class="text-gray-400">Session booking fee - Emily Brown & David Lee</td>
+                                    <td class="text-gray-400">Dec 13, 2024</td>
+                                    <td class="font-medium text-green-400">+₹150</td>
+                                    <td class="font-medium text-white">₹5,26,900</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        // Revenue Trend Chart (Line Chart)
+        const revenueCtx = document.getElementById('revenueChart').getContext('2d');
+        const revenueChart = new Chart(revenueCtx, {
+            type: 'line',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                datasets: [
+                    {
+                        label: 'Total Revenue',
+                        data: [125000, 152000, 138000, 169000, 172000, 187500, 195000, 210000, 225000, 240000, 255000, 270000],
+                        borderColor: '#34d399',
+                        backgroundColor: 'rgba(52, 211, 153, 0.1)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.4,
+                        pointBackgroundColor: '#34d399',
+                        pointBorderColor: '#34d399',
+                        pointRadius: 5,
+                        pointHoverRadius: 8
+                    },
+                    {
+                        label: 'Service Fees',
+                        data: [12500, 15200, 13800, 16900, 17200, 18750, 19500, 21000, 22500, 24000, 25500, 27000],
+                        borderColor: '#60a5fa',
+                        backgroundColor: 'rgba(96, 165, 250, 0.1)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.4,
+                        pointBackgroundColor: '#60a5fa',
+                        pointBorderColor: '#60a5fa',
+                        pointRadius: 5,
+                        pointHoverRadius: 8
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: true,
+                        labels: {
+                            color: '#9ca3af',
+                            usePointStyle: true,
+                            padding: 20
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: {
+                            display: false
+                        },
+                        ticks: {
+                            color: '#9ca3af'
+                        }
+                    },
+                    y: {
+                        grid: {
+                            color: '#333'
+                        },
+                        ticks: {
+                            color: '#9ca3af',
+                            callback: function(value) {
+                                return '₹' + (value / 1000) + 'k';
+                            }
+                        }
+                    }
+                },
+                elements: {
+                    point: {
+                        hoverBackgroundColor: '#fff'
+                    }
+                }
+            }
+        });
+
+        // Revenue Distribution Chart (Doughnut Chart)
+        const distributionCtx = document.getElementById('distributionChart').getContext('2d');
+        const distributionChart = new Chart(distributionCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Service Fees', 'Platform Revenue', 'Other Income'],
+                datasets: [{
+                    data: [234890, 187500, 64860],
+                    backgroundColor: ['#34d399', '#60a5fa', '#fbbf24'],
+                    borderWidth: 0,
+                    cutout: '70%'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'bottom',
+                        labels: {
+                            color: '#9ca3af',
+                            usePointStyle: true,
+                            padding: 20
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return context.label + ': ₹' + context.parsed.toLocaleString();
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // Search functionality
+        document.getElementById('globalSearch').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const tableRows = document.querySelectorAll('#transactionsTableBody tr');
+            
+            tableRows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                if (text.includes(searchTerm)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

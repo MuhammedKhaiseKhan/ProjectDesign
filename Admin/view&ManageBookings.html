@@ -1,0 +1,1087 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>View & Manage Bookings - Vermento Admin</title>
+  <style>
+      /* Base Styles */
+      * {
+          margin: 0;
+          padding: 0;
+          box-sizing: border-box;
+      }
+
+      body {
+          font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+          background: #000;
+          color: #fff;
+          min-height: 100vh;
+          display: flex;
+          flex-direction: column;
+      }
+
+      a {
+          text-decoration: none;
+          color: inherit;
+      }
+
+      /* Utility Classes */
+      .container {
+          max-width: 1200px;
+          margin-left: auto;
+          margin-right: auto;
+          padding-left: 1.5rem;
+          padding-right: 1.5rem;
+      }
+
+      .flex { display: flex; }
+      .flex-col { flex-direction: column; }
+      .items-center { align-items: center; }
+      .justify-between { justify-content: space-between; }
+      .justify-center { justify-content: center; }
+      .gap-2 { gap: 0.5rem; }
+      .gap-4 { gap: 1rem; }
+      .gap-6 { gap: 1.5rem; }
+      .p-4 { padding: 1rem; }
+      .p-6 { padding: 1.5rem; }
+      .py-4 { padding-top: 1rem; padding-bottom: 1rem; }
+      .px-4 { padding-left: 1rem; padding-right: 1rem; }
+      .px-6 { padding-left: 1.5rem; padding-right: 1.5rem; }
+      .pl-9 { padding-left: 2.25rem; }
+      .mb-2 { margin-bottom: 0.5rem; }
+      .mb-4 { margin-bottom: 1rem; }
+      .mb-6 { margin-bottom: 1.5rem; }
+      .mb-8 { margin-bottom: 2rem; }
+      .mr-2 { margin-right: 0.5rem; }
+      .mr-3 { margin-right: 0.75rem; }
+      .ml-2 { margin-left: 0.5rem; }
+      .-translate-y-1\/2 { transform: translateY(-50%); }
+
+      .relative { position: relative; }
+      .absolute { position: absolute; }
+      .left-3 { left: 0.75rem; }
+      .top-1\/2 { top: 50%; }
+
+      .w-full { width: 100%; }
+      .w-64 { width: 16rem; }
+      .w-10 { width: 2.5rem; }
+      .w-12 { width: 3rem; }
+      .h-4 { height: 1rem; }
+      .h-6 { height: 1.5rem; }
+      .h-8 { height: 2rem; }
+      .h-9 { height: 2.25rem; }
+      .h-10 { height: 2.5rem; }
+      .h-12 { height: 3rem; }
+
+      .text-xs { font-size: 0.75rem; line-height: 1rem; }
+      .text-sm { font-size: 0.875rem; line-height: 1.25rem; }
+      .text-base { font-size: 1rem; line-height: 1.5rem; }
+      .text-lg { font-size: 1.125rem; line-height: 1.75rem; }
+      .text-xl { font-size: 1.25rem; line-height: 1.75rem; }
+      .text-2xl { font-size: 1.5rem; line-height: 2rem; }
+      .text-3xl { font-size: 1.875rem; line-height: 2.25rem; }
+
+      .font-bold { font-weight: 700; }
+      .font-semibold { font-weight: 600; }
+      .font-medium { font-weight: 500; }
+
+      .text-white { color: #fff; }
+      .text-gray-400 { color: #9ca3af; }
+      .text-gray-500 { color: #6b7280; }
+      .text-gray-600 { color: #4b5563; }
+      .text-green-400 { color: #34d399; }
+      .text-red-400 { color: #f87171; }
+      .text-yellow-400 { color: #fbbf24; }
+      .text-blue-400 { color: #60a5fa; }
+
+      .bg-gray-800 { background-color: #1f2937; }
+      .bg-gray-900 { background-color: #111827; }
+      .bg-green-600 { background-color: #059669; }
+      .bg-red-600 { background-color: #dc2626; }
+      .bg-blue-600 { background-color: #2563eb; }
+      .bg-yellow-600 { background-color: #d97706; }
+
+      .border { border-width: 1px; border-style: solid; border-color: #333; }
+      .border-b { border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #333; }
+      .border-gray-700 { border-color: #374151; }
+
+      .rounded-full { border-radius: 9999px; }
+      .rounded-md { border-radius: 0.375rem; }
+      .rounded-lg { border-radius: 0.5rem; }
+
+      .text-center { text-align: center; }
+
+      /* Dashboard Layout */
+      .dashboard-layout {
+          display: flex;
+          min-height: 100vh;
+          width: 100%;
+      }
+
+      /* Sidebar Styles */
+      .sidebar {
+          position: fixed;
+          left: 0;
+          top: 0;
+          bottom: 0;
+          width: 16rem;
+          background-color: #111;
+          border-right: 1px solid #333;
+          padding-top: 1.5rem;
+          z-index: 20;
+          display: flex;
+          flex-direction: column;
+          align-items: flex-start;
+      }
+
+      .sidebar-logo {
+          font-size: 1.5rem;
+          font-weight: 700;
+          color: #fff;
+          margin-bottom: 2rem;
+          padding-left: 1rem;
+          display: block;
+      }
+      .sidebar-logo .faded {
+          color: #888;
+      }
+
+      .sidebar-nav {
+          list-style: none;
+          width: 100%;
+          padding: 0;
+          margin: 0;
+          flex-grow: 1;
+      }
+
+      .sidebar-nav-item {
+          margin-bottom: 0.5rem;
+          width: 100%;
+      }
+
+      .sidebar-nav-link {
+          display: flex;
+          align-items: center;
+          padding: 0.75rem 1rem;
+          color: #aaa;
+          font-size: 0.875rem;
+          font-weight: 500;
+          border-radius: 0.375rem;
+          transition: background-color 0.2s, color 0.2s;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          justify-content: flex-start;
+      }
+
+      .sidebar-nav-link:hover {
+          background-color: #222;
+          color: #fff;
+      }
+
+      .sidebar-nav-link.active {
+          background-color: #222;
+          color: #fff;
+      }
+
+      .sidebar-nav-link svg {
+          height: 1.25rem;
+          width: 1.25rem;
+          margin-right: 0.75rem;
+          flex-shrink: 0;
+          color: #aaa;
+      }
+
+      .sidebar-nav-link span {
+          display: inline;
+      }
+
+      .sidebar-footer {
+          width: 100%;
+          padding: 1rem;
+          border-top: 1px solid #333;
+          display: flex;
+          flex-direction: column;
+          align-items: flex-start;
+      }
+
+      /* Main Content Area */
+      .main-content {
+          flex: 1;
+          margin-left: 16rem;
+          padding: 1.5rem;
+          overflow-y: auto;
+      }
+
+      /* Header Styles */
+      .header {
+          border-bottom: 1px solid #333;
+          background-color: #111;
+          padding: 1.5rem;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          position: sticky;
+          top: 0;
+          z-index: 10;
+          margin-left: 16rem;
+      }
+
+      .nav-buttons {
+          display: flex;
+          gap: 12px;
+          align-items: center;
+      }
+
+      /* Avatar Styles */
+      .avatar {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          border-radius: 9999px;
+          overflow: hidden;
+          position: relative;
+          flex-shrink: 0;
+      }
+      .avatar-image {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+      }
+      .avatar-fallback {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 100%;
+          height: 100%;
+          background-color: #333;
+          color: #eee;
+          font-weight: 600;
+      }
+
+      /* Input Styles */
+      .input {
+          display: flex;
+          height: 2.5rem;
+          width: 100%;
+          border-radius: 0.375rem;
+          border: 1px solid #444;
+          background-color: #222;
+          padding: 0 0.75rem;
+          font-size: 0.875rem;
+          box-shadow: none;
+          transition: border-color 0.2s, box-shadow 0.2s;
+          color: #fff;
+      }
+      .input:focus-visible {
+          outline: none;
+          border-color: #fff;
+          background: #333;
+          box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
+      }
+      .input::placeholder {
+          color: #666;
+      }
+
+      /* Button Styles */
+      .btn {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          white-space: nowrap;
+          border-radius: 0.375rem;
+          font-size: 0.875rem;
+          font-weight: 500;
+          height: 2.5rem;
+          padding: 0 1rem;
+          cursor: pointer;
+          transition: all 0.2s ease-in-out;
+          border: none;
+      }
+      .btn-ghost {
+          background-color: transparent;
+          color: #d1d5db;
+      }
+      .btn-ghost:hover {
+          background-color: #222;
+          color: #fff;
+      }
+      .btn-primary {
+          background-color: #fff;
+          color: #000;
+      }
+      .btn-primary:hover {
+          background-color: #f0f0f0;
+      }
+      .btn-success {
+          background-color: #059669;
+          color: #fff;
+      }
+      .btn-success:hover {
+          background-color: #047857;
+      }
+      .btn-danger {
+          background-color: #dc2626;
+          color: #fff;
+      }
+      .btn-danger:hover {
+          background-color: #b91c1c;
+      }
+      .btn-warning {
+          background-color: #d97706;
+          color: #fff;
+      }
+      .btn-warning:hover {
+          background-color: #b45309;
+      }
+      .btn-sm {
+          height: 2rem;
+          padding: 0 0.75rem;
+          font-size: 0.75rem;
+      }
+
+      /* Card Styles */
+      .card {
+          background-color: #1a1a1a;
+          border-radius: 0.5rem;
+          border: 1px solid #333;
+          overflow: hidden;
+          transition: all 0.3s ease-in-out;
+      }
+      .card:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 10px 20px rgba(255, 255, 255, 0.1);
+      }
+
+      /* Stats Cards */
+      .stats-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+          gap: 1.5rem;
+          margin-bottom: 2rem;
+      }
+
+      .stat-card {
+          background-color: #1a1a1a;
+          border-radius: 0.5rem;
+          border: 1px solid #333;
+          padding: 1.5rem;
+          transition: all 0.3s ease-in-out;
+      }
+
+      .stat-card:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 10px 20px rgba(255, 255, 255, 0.1);
+      }
+
+      .stat-icon {
+          width: 3rem;
+          height: 3rem;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          margin-bottom: 1rem;
+      }
+
+      .stat-value {
+          font-size: 2rem;
+          font-weight: 700;
+          color: #fff;
+          margin-bottom: 0.25rem;
+      }
+
+      .stat-label {
+          font-size: 0.875rem;
+          color: #9ca3af;
+      }
+
+      /* Pricing Section */
+      .pricing-section {
+          background-color: #1a1a1a;
+          border-radius: 0.5rem;
+          border: 1px solid #333;
+          padding: 2rem;
+          margin-bottom: 2rem;
+      }
+
+      .pricing-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+          gap: 2rem;
+          margin-top: 1.5rem;
+      }
+
+      .pricing-card {
+          background-color: #222;
+          border-radius: 0.5rem;
+          border: 1px solid #444;
+          padding: 1.5rem;
+          transition: all 0.3s ease-in-out;
+      }
+
+      .pricing-card:hover {
+          border-color: #fff;
+          box-shadow: 0 5px 15px rgba(255, 255, 255, 0.1);
+      }
+
+      /* Slider Styles */
+      .slider-container {
+          margin: 1rem 0;
+      }
+
+      .slider {
+          -webkit-appearance: none;
+          width: 100%;
+          height: 6px;
+          border-radius: 3px;
+          background: #333;
+          outline: none;
+          opacity: 0.7;
+          transition: opacity 0.2s;
+      }
+
+      .slider:hover {
+          opacity: 1;
+      }
+
+      .slider::-webkit-slider-thumb {
+          -webkit-appearance: none;
+          appearance: none;
+          width: 20px;
+          height: 20px;
+          border-radius: 50%;
+          background: #fff;
+          cursor: pointer;
+      }
+
+      .slider::-moz-range-thumb {
+          width: 20px;
+          height: 20px;
+          border-radius: 50%;
+          background: #fff;
+          cursor: pointer;
+          border: none;
+      }
+
+      /* Table Styles */
+      .table-container {
+          background-color: #1a1a1a;
+          border-radius: 0.5rem;
+          border: 1px solid #333;
+          overflow: hidden;
+      }
+
+      .table {
+          width: 100%;
+          border-collapse: collapse;
+      }
+
+      .table th,
+      .table td {
+          padding: 1rem;
+          text-align: left;
+          border-bottom: 1px solid #333;
+      }
+
+      .table th {
+          background-color: #111;
+          font-weight: 600;
+          color: #fff;
+          font-size: 0.875rem;
+      }
+
+      .table td {
+          color: #d1d5db;
+      }
+
+      .table tbody tr:hover {
+          background-color: #222;
+      }
+
+      .table tbody tr:last-child td {
+          border-bottom: none;
+      }
+
+      /* Status Badge */
+      .status-badge {
+          display: inline-flex;
+          align-items: center;
+          padding: 0.25rem 0.75rem;
+          border-radius: 9999px;
+          font-size: 0.75rem;
+          font-weight: 500;
+      }
+
+      .status-confirmed {
+          background-color: rgba(34, 197, 94, 0.1);
+          color: #22c55e;
+      }
+
+      .status-pending {
+          background-color: rgba(251, 191, 36, 0.1);
+          color: #fbbf24;
+      }
+
+      .status-cancelled {
+          background-color: rgba(239, 68, 68, 0.1);
+          color: #ef4444;
+      }
+
+      .status-completed {
+          background-color: rgba(96, 165, 250, 0.1);
+          color: #60a5fa;
+      }
+
+      /* Mobile Responsiveness */
+      @media (max-width: 768px) {
+          .sidebar {
+              width: 100%;
+              position: relative;
+              height: auto;
+              border-right: none;
+              padding-bottom: 1rem;
+          }
+
+          .main-content, .header {
+              margin-left: 0;
+          }
+
+          .stats-grid {
+              grid-template-columns: 1fr;
+          }
+
+          .pricing-grid {
+              grid-template-columns: 1fr;
+          }
+
+          .table-container {
+              overflow-x: auto;
+          }
+
+          .table {
+              min-width: 700px;
+          }
+      }
+  </style>
+</head>
+<body>
+    <div class="dashboard-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <a href="admin-dashboard.html" class="sidebar-logo">Ver<span class="faded">mento</span></a>
+            <nav class="sidebar-nav">
+                <div class="sidebar-nav-item">
+                    <a href="admin-dashboard.html" class="sidebar-nav-link">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                        <span>Dashboard</span>
+                    </a>
+                </div>
+                <div class="sidebar-nav-item">
+                    <a href="user-management.html" class="sidebar-nav-link">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                        <span>User Management</span>
+                    </a>
+                </div>
+                <div class="sidebar-nav-item">
+                    <a href="mentor-management.html" class="sidebar-nav-link">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                        <span>Mentor Management</span>
+                    </a>
+                </div>
+                <div class="sidebar-nav-item">
+                    <a href="booking-management.html" class="sidebar-nav-link active">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/><path d="M12 16h.01"/><path d="M8 16h.01"/><path d="M16 16h.01"/><path d="M12 12h.01"/><path d="M8 12h.01"/><path d="M16 12h.01"/></svg>
+                        <span>View & Manage Bookings</span>
+                    </a>
+                </div>
+                <div class="sidebar-nav-item">
+                    <a href="financial-overview.html" class="sidebar-nav-link">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h12a2 2 0 0 1 0 4H5a2 2 0 0 0 0 4h12a2 2 0 0 0 2-2v-3"/><path d="M10 12H7a2 2 0 0 0-2 2v4a2 2 0 0 0 2 2h3"/></svg>
+                        <span>Financial Overview</span>
+                    </a>
+                </div>
+            </nav>
+            <div class="sidebar-footer">
+                <div class="sidebar-nav-item">
+                    <a href="/admin-profile.html" class="sidebar-nav-link">
+                        <span class="avatar h-6 w-6">
+                            <img src="https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=400" alt="Admin Profile" class="avatar-image" />
+                            <span class="avatar-fallback">AS</span>
+                        </span>
+                        <span>Admin Smith</span>
+                    </a>
+                </div>
+                <div class="sidebar-nav-item">
+                    <a href="/logout" class="sidebar-nav-link">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="17 16 22 12 17 8"/><line x1="22" x2="10" y1="12" y2="12"/></svg>
+                        <span>Logout</span>
+                    </a>
+                </div>
+            </div>
+        </aside>
+
+        <div style="flex: 1; display: flex; flex-direction: column;">
+            <!-- Header -->
+            <header class="header">
+                <div class="relative w-64">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                    <input type="text" placeholder="Search bookings..." class="input pl-9" id="globalSearch" />
+                </div>
+                <div class="nav-buttons">
+                    <a href="#" class="btn-ghost">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-6 w-6 text-white"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.36 14H13.64a2 2 0 0 1 2 1.73 2 2 0 0 0 2 1.73H6.36a2 2 0 0 0 2 1.73 2 2 0 0 1 2-1.73Z"/></svg>
+                    </a>
+                    <span class="avatar h-9 w-9">
+                        <img src="https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=400" alt="Admin Profile" class="avatar-image" />
+                        <span class="avatar-fallback">AS</span>
+                    </span>
+                    <span class="font-medium text-white">Admin Smith</span>
+                </div>
+            </header>
+
+            <!-- Main Content Area -->
+            <main class="main-content">
+                <div class="flex items-center justify-between mb-8">
+                    <h1 class="text-3xl font-bold text-white">View & Manage Bookings</h1>
+                </div>
+
+                <!-- Booking Statistics -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon bg-blue-600">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-white"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg>
+                        </div>
+                        <div class="stat-value">2,847</div>
+                        <div class="stat-label">Total Bookings</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon bg-yellow-600">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-white"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                        </div>
+                        <div class="stat-value">156</div>
+                        <div class="stat-label">Pending Bookings</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon bg-red-600">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-white"><circle cx="12" cy="12" r="10"/><line x1="15" x2="9" y1="9" y2="15"/><line x1="9" x2="15" y1="9" y2="15"/></svg>
+                        </div>
+                        <div class="stat-value">89</div>
+                        <div class="stat-label">Cancelled Bookings</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon bg-green-600">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-white"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="10"/></svg>
+                        </div>
+                        <div class="stat-value">2,602</div>
+                        <div class="stat-label">Completed Sessions</div>
+                    </div>
+                </div>
+
+                <!-- Session Pricing Configuration -->
+                <div class="pricing-section">
+                    <h2 class="text-2xl font-semibold text-white mb-4">Session Pricing Configuration</h2>
+                    <p class="text-gray-400 mb-6">Set pricing for different session durations and configure service fees</p>
+                    
+                    <div class="pricing-grid">
+                        <!-- 30 Minutes Session -->
+                        <div class="pricing-card">
+                            <h3 class="text-lg font-semibold text-white mb-4">30 Minutes Session</h3>
+                            <div class="slider-container">
+                                <label class="text-sm text-gray-400 mb-2 block">Price: ₹<span id="price30">500</span></label>
+                                <input type="range" min="200" max="1000" value="500" class="slider" id="slider30">
+                                <div class="flex justify-between text-xs text-gray-500 mt-1">
+                                    <span>₹200</span>
+                                    <span>₹1000</span>
+                                </div>
+                            </div>
+                            <div class="mt-4">
+                                <label class="text-sm text-gray-400 mb-2 block">Service Fee: <span id="fee30">10</span>%</label>
+                                <input type="range" min="5" max="25" value="10" class="slider" id="feeSlider30">
+                                <div class="flex justify-between text-xs text-gray-500 mt-1">
+                                    <span>5%</span>
+                                    <span>25%</span>
+                                </div>
+                                <div class="text-xs text-gray-400 mt-2">Company gets: ₹<span id="companyFee30">50</span></div>
+                            </div>
+                        </div>
+
+                        <!-- 1 Hour Session -->
+                        <div class="pricing-card">
+                            <h3 class="text-lg font-semibold text-white mb-4">1 Hour Session</h3>
+                            <div class="slider-container">
+                                <label class="text-sm text-gray-400 mb-2 block">Price: ₹<span id="price60">1000</span></label>
+                                <input type="range" min="500" max="2000" value="1000" class="slider" id="slider60">
+                                <div class="flex justify-between text-xs text-gray-500 mt-1">
+                                    <span>₹500</span>
+                                    <span>₹2000</span>
+                                </div>
+                            </div>
+                            <div class="mt-4">
+                                <label class="text-sm text-gray-400 mb-2 block">Service Fee: <span id="fee60">10</span>%</label>
+                                <input type="range" min="5" max="25" value="10" class="slider" id="feeSlider60">
+                                <div class="flex justify-between text-xs text-gray-500 mt-1">
+                                    <span>5%</span>
+                                    <span>25%</span>
+                                </div>
+                                <div class="text-xs text-gray-400 mt-2">Company gets: ₹<span id="companyFee60">100</span></div>
+                            </div>
+                        </div>
+
+                        <!-- 1.5 Hours Session -->
+                        <div class="pricing-card">
+                            <h3 class="text-lg font-semibold text-white mb-4">1.5 Hours Session</h3>
+                            <div class="slider-container">
+                                <label class="text-sm text-gray-400 mb-2 block">Price: ₹<span id="price90">1500</span></label>
+                                <input type="range" min="800" max="3000" value="1500" class="slider" id="slider90">
+                                <div class="flex justify-between text-xs text-gray-500 mt-1">
+                                    <span>₹800</span>
+                                    <span>₹3000</span>
+                                </div>
+                            </div>
+                            <div class="mt-4">
+                                <label class="text-sm text-gray-400 mb-2 block">Service Fee: <span id="fee90">10</span>%</label>
+                                <input type="range" min="5" max="25" value="10" class="slider" id="feeSlider90">
+                                <div class="flex justify-between text-xs text-gray-500 mt-1">
+                                    <span>5%</span>
+                                    <span>25%</span>
+                                </div>
+                                <div class="text-xs text-gray-400 mt-2">Company gets: ₹<span id="companyFee90">150</span></div>
+                            </div>
+                        </div>
+
+                        <!-- 2 Hours Session -->
+                        <div class="pricing-card">
+                            <h3 class="text-lg font-semibold text-white mb-4">2 Hours Session</h3>
+                            <div class="slider-container">
+                                <label class="text-sm text-gray-400 mb-2 block">Price: ₹<span id="price120">2000</span></label>
+                                <input type="range" min="1000" max="4000" value="2000" class="slider" id="slider120">
+                                <div class="flex justify-between text-xs text-gray-500 mt-1">
+                                    <span>₹1000</span>
+                                    <span>₹4000</span>
+                                </div>
+                            </div>
+                            <div class="mt-4">
+                                <label class="text-sm text-gray-400 mb-2 block">Service Fee: <span id="fee120">10</span>%</label>
+                                <input type="range" min="5" max="25" value="10" class="slider" id="feeSlider120">
+                                <div class="flex justify-between text-xs text-gray-500 mt-1">
+                                    <span>5%</span>
+                                    <span>25%</span>
+                                </div>
+                                <div class="text-xs text-gray-400 mt-2">Company gets: ₹<span id="companyFee120">200</span></div>
+                            </div>
+                        </div>
+
+                        <!-- 3 Hours Session -->
+                        <div class="pricing-card">
+                            <h3 class="text-lg font-semibold text-white mb-4">3 Hours Session</h3>
+                            <div class="slider-container">
+                                <label class="text-sm text-gray-400 mb-2 block">Price: ₹<span id="price180">3000</span></label>
+                                <input type="range" min="1500" max="6000" value="3000" class="slider" id="slider180">
+                                <div class="flex justify-between text-xs text-gray-500 mt-1">
+                                    <span>₹1500</span>
+                                    <span>₹6000</span>
+                                </div>
+                            </div>
+                            <div class="mt-4">
+                                <label class="text-sm text-gray-400 mb-2 block">Service Fee: <span id="fee180">10</span>%</label>
+                                <input type="range" min="5" max="25" value="10" class="slider" id="feeSlider180">
+                                <div class="flex justify-between text-xs text-gray-500 mt-1">
+                                    <span>5%</span>
+                                    <span>25%</span>
+                                </div>
+                                <div class="text-xs text-gray-400 mt-2">Company gets: ₹<span id="companyFee180">300</span></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-end mt-6">
+                        <button class="btn btn-primary" onclick="savePricing()">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+                            Save Pricing Configuration
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Recent Bookings Table -->
+                <div class="mb-8">
+                    <h2 class="text-2xl font-semibold text-white mb-6">Recent Bookings</h2>
+                    <div class="table-container">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Booking ID</th>
+                                    <th>User</th>
+                                    <th>Mentor</th>
+                                    <th>Date & Time</th>
+                                    <th>Duration</th>
+                                    <th>Amount</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="bookingsTableBody">
+                                <tr>
+                                    <td class="font-medium text-white">#BK001</td>
+                                    <td>
+                                        <div class="flex items-center gap-3">
+                                            <span class="avatar h-8 w-8">
+                                                <img src="https://images.pexels.com/photos/1181686/pexels-photo-1181686.jpeg?auto=compress&cs=tinysrgb&w=400" alt="User" class="avatar-image" />
+                                                <span class="avatar-fallback">SJ</span>
+                                            </span>
+                                            <div>
+                                                <div class="font-medium text-white">Sarah Johnson</div>
+                                                <div class="text-sm text-gray-400">sarah@example.com</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="flex items-center gap-3">
+                                            <span class="avatar h-8 w-8">
+                                                <img src="https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=400" alt="Mentor" class="avatar-image" />
+                                                <span class="avatar-fallback">JD</span>
+                                            </span>
+                                            <div>
+                                                <div class="font-medium text-white">John Doe</div>
+                                                <div class="text-sm text-gray-400">Software Engineering</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="text-gray-400">
+                                        <div>Dec 15, 2024</div>
+                                        <div class="text-sm">2:00 PM</div>
+                                    </td>
+                                    <td class="text-gray-400">1 Hour</td>
+                                    <td class="font-medium text-white">₹1,000</td>
+                                    <td>
+                                        <span class="status-badge status-confirmed">Confirmed</span>
+                                    </td>
+                                    <td>
+                                        <div class="flex items-center gap-2">
+                                            <button class="btn btn-sm btn-primary" onclick="viewBooking('BK001')">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="font-medium text-white">#BK002</td>
+                                    <td>
+                                        <div class="flex items-center gap-3">
+                                            <span class="avatar h-8 w-8">
+                                                <img src="https://images.pexels.com/photos/1043471/pexels-photo-1043471.jpeg?auto=compress&cs=tinysrgb&w=400" alt="User" class="avatar-image" />
+                                                <span class="avatar-fallback">MW</span>
+                                            </span>
+                                            <div>
+                                                <div class="font-medium text-white">Michael Wilson</div>
+                                                <div class="text-sm text-gray-400">michael@example.com</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="flex items-center gap-3">
+                                            <span class="avatar h-8 w-8">
+                                                <img src="https://images.pexels.com/photos/1181424/pexels-photo-1181424.jpeg?auto=compress&cs=tinysrgb&w=400" alt="Mentor" class="avatar-image" />
+                                                <span class="avatar-fallback">EB</span>
+                                            </span>
+                                            <div>
+                                                <div class="font-medium text-white">Emily Brown</div>
+                                                <div class="text-sm text-gray-400">UX/UI Design</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="text-gray-400">
+                                        <div>Dec 16, 2024</div>
+                                        <div class="text-sm">10:00 AM</div>
+                                    </td>
+                                    <td class="text-gray-400">30 Minutes</td>
+                                    <td class="font-medium text-white">₹500</td>
+                                    <td>
+                                        <span class="status-badge status-pending">Pending</span>
+                                    </td>
+                                    <td>
+                                        <div class="flex items-center gap-2">
+                                            <button class="btn btn-sm btn-primary" onclick="viewBooking('BK002')">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="font-medium text-white">#BK003</td>
+                                    <td>
+                                        <div class="flex items-center gap-3">
+                                            <span class="avatar h-8 w-8">
+                                                <img src="https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=400" alt="User" class="avatar-image" />
+                                                <span class="avatar-fallback">DL</span>
+                                            </span>
+                                            <div>
+                                                <div class="font-medium text-white">David Lee</div>
+                                                <div class="text-sm text-gray-400">david@example.com</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="flex items-center gap-3">
+                                            <span class="avatar h-8 w-8">
+                                                <img src="https://images.pexels.com/photos/1181686/pexels-photo-1181686.jpeg?auto=compress&cs=tinysrgb&w=400" alt="Mentor" class="avatar-image" />
+                                                <span class="avatar-fallback">SJ</span>
+                                            </span>
+                                            <div>
+                                                <div class="font-medium text-white">Sarah Johnson</div>
+                                                <div class="text-sm text-gray-400">Data Science</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="text-gray-400">
+                                        <div>Dec 14, 2024</div>
+                                        <div class="text-sm">4:00 PM</div>
+                                    </td>
+                                    <td class="text-gray-400">2 Hours</td>
+                                    <td class="font-medium text-white">₹2,000</td>
+                                    <td>
+                                        <span class="status-badge status-completed">Completed</span>
+                                    </td>
+                                    <td>
+                                        <div class="flex items-center gap-2">
+                                            <button class="btn btn-sm btn-primary" onclick="viewBooking('BK003')">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="font-medium text-white">#BK004</td>
+                                    <td>
+                                        <div class="flex items-center gap-3">
+                                            <span class="avatar h-8 w-8">
+                                                <img src="https://images.pexels.com/photos/1181424/pexels-photo-1181424.jpeg?auto=compress&cs=tinysrgb&w=400" alt="User" class="avatar-image" />
+                                                <span class="avatar-fallback">EB</span>
+                                            </span>
+                                            <div>
+                                                <div class="font-medium text-white">Emily Brown</div>
+                                                <div class="text-sm text-gray-400">emily@example.com</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="flex items-center gap-3">
+                                            <span class="avatar h-8 w-8">
+                                                <img src="https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=400" alt="Mentor" class="avatar-image" />
+                                                <span class="avatar-fallback">DL</span>
+                                            </span>
+                                            <div>
+                                                <div class="font-medium text-white">David Lee</div>
+                                                <div class="text-sm text-gray-400">Marketing Strategy</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="text-gray-400">
+                                        <div>Dec 13, 2024</div>
+                                        <div class="text-sm">11:00 AM</div>
+                                    </td>
+                                    <td class="text-gray-400">1.5 Hours</td>
+                                    <td class="font-medium text-white">₹1,500</td>
+                                    <td>
+                                        <span class="status-badge status-cancelled">Cancelled</span>
+                                    </td>
+                                    <td>
+                                        <div class="flex items-center gap-2">
+                                            <button class="btn btn-sm btn-primary" onclick="viewBooking('BK004')">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        // Pricing slider functionality
+        function setupSlider(duration) {
+            const priceSlider = document.getElementById(`slider${duration}`);
+            const feeSlider = document.getElementById(`feeSlider${duration}`);
+            const priceDisplay = document.getElementById(`price${duration}`);
+            const feeDisplay = document.getElementById(`fee${duration}`);
+            const companyFeeDisplay = document.getElementById(`companyFee${duration}`);
+
+            function updatePricing() {
+                const price = parseInt(priceSlider.value);
+                const feePercentage = parseInt(feeSlider.value);
+                const companyFee = Math.round((price * feePercentage) / 100);
+
+                priceDisplay.textContent = price;
+                feeDisplay.textContent = feePercentage;
+                companyFeeDisplay.textContent = companyFee;
+            }
+
+            priceSlider.addEventListener('input', updatePricing);
+            feeSlider.addEventListener('input', updatePricing);
+        }
+
+        // Initialize all sliders
+        setupSlider('30');
+        setupSlider('60');
+        setupSlider('90');
+        setupSlider('120');
+        setupSlider('180');
+
+        // Search functionality
+        document.getElementById('globalSearch').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const tableRows = document.querySelectorAll('#bookingsTableBody tr');
+            
+            tableRows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                if (text.includes(searchTerm)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        });
+
+        // Save pricing configuration
+        function savePricing() {
+            const pricingData = {
+                '30min': {
+                    price: document.getElementById('price30').textContent,
+                    serviceFee: document.getElementById('fee30').textContent
+                },
+                '60min': {
+                    price: document.getElementById('price60').textContent,
+                    serviceFee: document.getElementById('fee60').textContent
+                },
+                '90min': {
+                    price: document.getElementById('price90').textContent,
+                    serviceFee: document.getElementById('fee90').textContent
+                },
+                '120min': {
+                    price: document.getElementById('price120').textContent,
+                    serviceFee: document.getElementById('fee120').textContent
+                },
+                '180min': {
+                    price: document.getElementById('price180').textContent,
+                    serviceFee: document.getElementById('fee180').textContent
+                }
+            };
+
+            // In a real application, this would send data to the server
+            console.log('Saving pricing configuration:', pricingData);
+            alert('Pricing configuration saved successfully!');
+        }
+
+        // View booking details
+        function viewBooking(bookingId) {
+            alert(`Viewing details for booking: ${bookingId}`);
+            // In a real application, this would open a modal or navigate to a booking detail page
+        }
+    </script>
+</body>
+</html>

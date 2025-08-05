@@ -1,0 +1,1265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mentor Management - Vermento Admin</title>
+  <style>
+      /* Base Styles */
+      * {
+          margin: 0;
+          padding: 0;
+          box-sizing: border-box;
+      }
+
+      body {
+          font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+          background: #000;
+          color: #fff;
+          min-height: 100vh;
+          display: flex;
+          flex-direction: column;
+      }
+
+      a {
+          text-decoration: none;
+          color: inherit;
+      }
+
+      /* Utility Classes */
+      .container {
+          max-width: 1200px;
+          margin-left: auto;
+          margin-right: auto;
+          padding-left: 1.5rem;
+          padding-right: 1.5rem;
+      }
+
+      .flex { display: flex; }
+      .flex-col { flex-direction: column; }
+      .items-center { align-items: center; }
+      .justify-between { justify-content: space-between; }
+      .justify-center { justify-content: center; }
+      .gap-2 { gap: 0.5rem; }
+      .gap-4 { gap: 1rem; }
+      .gap-6 { gap: 1.5rem; }
+      .p-4 { padding: 1rem; }
+      .p-6 { padding: 1.5rem; }
+      .py-4 { padding-top: 1rem; padding-bottom: 1rem; }
+      .px-4 { padding-left: 1rem; padding-right: 1rem; }
+      .px-6 { padding-left: 1.5rem; padding-right: 1.5rem; }
+      .pl-9 { padding-left: 2.25rem; }
+      .mb-2 { margin-bottom: 0.5rem; }
+      .mb-4 { margin-bottom: 1rem; }
+      .mb-6 { margin-bottom: 1.5rem; }
+      .mb-8 { margin-bottom: 2rem; }
+      .mr-2 { margin-right: 0.5rem; }
+      .mr-3 { margin-right: 0.75rem; }
+      .ml-2 { margin-left: 0.5rem; }
+      .-translate-y-1\/2 { transform: translateY(-50%); }
+
+      .relative { position: relative; }
+      .absolute { position: absolute; }
+      .left-3 { left: 0.75rem; }
+      .top-1\/2 { top: 50%; }
+
+      .w-full { width: 100%; }
+      .w-64 { width: 16rem; }
+      .w-10 { width: 2.5rem; }
+      .w-12 { width: 3rem; }
+      .h-4 { height: 1rem; }
+      .h-6 { height: 1.5rem; }
+      .h-8 { height: 2rem; }
+      .h-9 { height: 2.25rem; }
+      .h-10 { height: 2.5rem; }
+      .h-12 { height: 3rem; }
+
+      .text-xs { font-size: 0.75rem; line-height: 1rem; }
+      .text-sm { font-size: 0.875rem; line-height: 1.25rem; }
+      .text-base { font-size: 1rem; line-height: 1.5rem; }
+      .text-lg { font-size: 1.125rem; line-height: 1.75rem; }
+      .text-xl { font-size: 1.25rem; line-height: 1.75rem; }
+      .text-2xl { font-size: 1.5rem; line-height: 2rem; }
+      .text-3xl { font-size: 1.875rem; line-height: 2.25rem; }
+
+      .font-bold { font-weight: 700; }
+      .font-semibold { font-weight: 600; }
+      .font-medium { font-weight: 500; }
+
+      .text-white { color: #fff; }
+      .text-gray-400 { color: #9ca3af; }
+      .text-gray-500 { color: #6b7280; }
+      .text-gray-600 { color: #4b5563; }
+      .text-green-400 { color: #34d399; }
+      .text-red-400 { color: #f87171; }
+      .text-yellow-400 { color: #fbbf24; }
+      .text-blue-400 { color: #60a5fa; }
+
+      .bg-gray-800 { background-color: #1f2937; }
+      .bg-gray-900 { background-color: #111827; }
+      .bg-green-600 { background-color: #059669; }
+      .bg-red-600 { background-color: #dc2626; }
+      .bg-blue-600 { background-color: #2563eb; }
+      .bg-yellow-600 { background-color: #d97706; }
+
+      .border { border-width: 1px; border-style: solid; border-color: #333; }
+      .border-b { border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #333; }
+      .border-gray-700 { border-color: #374151; }
+
+      .rounded-full { border-radius: 9999px; }
+      .rounded-md { border-radius: 0.375rem; }
+      .rounded-lg { border-radius: 0.5rem; }
+
+      .text-center { text-align: center; }
+
+      /* Dashboard Layout */
+      .dashboard-layout {
+          display: flex;
+          min-height: 100vh;
+          width: 100%;
+      }
+
+      /* Sidebar Styles */
+      .sidebar {
+          position: fixed;
+          left: 0;
+          top: 0;
+          bottom: 0;
+          width: 16rem;
+          background-color: #111;
+          border-right: 1px solid #333;
+          padding-top: 1.5rem;
+          z-index: 20;
+          display: flex;
+          flex-direction: column;
+          align-items: flex-start;
+      }
+
+      .sidebar-logo {
+          font-size: 1.5rem;
+          font-weight: 700;
+          color: #fff;
+          margin-bottom: 2rem;
+          padding-left: 1rem;
+          display: block;
+      }
+      .sidebar-logo .faded {
+          color: #888;
+      }
+
+      .sidebar-nav {
+          list-style: none;
+          width: 100%;
+          padding: 0;
+          margin: 0;
+          flex-grow: 1;
+      }
+
+      .sidebar-nav-item {
+          margin-bottom: 0.5rem;
+          width: 100%;
+      }
+
+      .sidebar-nav-link {
+          display: flex;
+          align-items: center;
+          padding: 0.75rem 1rem;
+          color: #aaa;
+          font-size: 0.875rem;
+          font-weight: 500;
+          border-radius: 0.375rem;
+          transition: background-color 0.2s, color 0.2s;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          justify-content: flex-start;
+      }
+
+      .sidebar-nav-link:hover {
+          background-color: #222;
+          color: #fff;
+      }
+
+      .sidebar-nav-link.active {
+          background-color: #222;
+          color: #fff;
+      }
+
+      .sidebar-nav-link svg {
+          height: 1.25rem;
+          width: 1.25rem;
+          margin-right: 0.75rem;
+          flex-shrink: 0;
+          color: #aaa;
+      }
+
+      .sidebar-nav-link span {
+          display: inline;
+      }
+
+      .sidebar-footer {
+          width: 100%;
+          padding: 1rem;
+          border-top: 1px solid #333;
+          display: flex;
+          flex-direction: column;
+          align-items: flex-start;
+      }
+
+      /* Main Content Area */
+      .main-content {
+          flex: 1;
+          margin-left: 16rem;
+          padding: 1.5rem;
+          overflow-y: auto;
+      }
+
+      /* Header Styles */
+      .header {
+          border-bottom: 1px solid #333;
+          background-color: #111;
+          padding: 1.5rem;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          position: sticky;
+          top: 0;
+          z-index: 10;
+          margin-left: 16rem;
+      }
+
+      .nav-buttons {
+          display: flex;
+          gap: 12px;
+          align-items: center;
+      }
+
+      /* Avatar Styles */
+      .avatar {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          border-radius: 9999px;
+          overflow: hidden;
+          position: relative;
+          flex-shrink: 0;
+      }
+      .avatar-image {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+      }
+      .avatar-fallback {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 100%;
+          height: 100%;
+          background-color: #333;
+          color: #eee;
+          font-weight: 600;
+      }
+
+      /* Input Styles */
+      .input {
+          display: flex;
+          height: 2.5rem;
+          width: 100%;
+          border-radius: 0.375rem;
+          border: 1px solid #444;
+          background-color: #222;
+          padding: 0 0.75rem;
+          font-size: 0.875rem;
+          box-shadow: none;
+          transition: border-color 0.2s, box-shadow 0.2s;
+          color: #fff;
+      }
+      .input:focus-visible {
+          outline: none;
+          border-color: #fff;
+          background: #333;
+          box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
+      }
+      .input::placeholder {
+          color: #666;
+      }
+
+      /* Button Styles */
+      .btn {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          white-space: nowrap;
+          border-radius: 0.375rem;
+          font-size: 0.875rem;
+          font-weight: 500;
+          height: 2.5rem;
+          padding: 0 1rem;
+          cursor: pointer;
+          transition: all 0.2s ease-in-out;
+          border: none;
+      }
+      .btn-ghost {
+          background-color: transparent;
+          color: #d1d5db;
+      }
+      .btn-ghost:hover {
+          background-color: #222;
+          color: #fff;
+      }
+      .btn-primary {
+          background-color: #fff;
+          color: #000;
+      }
+      .btn-primary:hover {
+          background-color: #f0f0f0;
+      }
+      .btn-success {
+          background-color: #059669;
+          color: #fff;
+      }
+      .btn-success:hover {
+          background-color: #047857;
+      }
+      .btn-danger {
+          background-color: #dc2626;
+          color: #fff;
+      }
+      .btn-danger:hover {
+          background-color: #b91c1c;
+      }
+      .btn-warning {
+          background-color: #d97706;
+          color: #fff;
+      }
+      .btn-warning:hover {
+          background-color: #b45309;
+      }
+      .btn-sm {
+          height: 2rem;
+          padding: 0 0.75rem;
+          font-size: 0.75rem;
+      }
+
+      /* Table Styles */
+      .table-container {
+          background-color: #1a1a1a;
+          border-radius: 0.5rem;
+          border: 1px solid #333;
+          overflow: hidden;
+      }
+
+      .table {
+          width: 100%;
+          border-collapse: collapse;
+      }
+
+      .table th,
+      .table td {
+          padding: 1rem;
+          text-align: left;
+          border-bottom: 1px solid #333;
+      }
+
+      .table th {
+          background-color: #111;
+          font-weight: 600;
+          color: #fff;
+          font-size: 0.875rem;
+      }
+
+      .table td {
+          color: #d1d5db;
+      }
+
+      .table tbody tr:hover {
+          background-color: #222;
+      }
+
+      .table tbody tr:last-child td {
+          border-bottom: none;
+      }
+
+      /* Status Badge */
+      .status-badge {
+          display: inline-flex;
+          align-items: center;
+          padding: 0.25rem 0.75rem;
+          border-radius: 9999px;
+          font-size: 0.75rem;
+          font-weight: 500;
+      }
+
+      .status-active {
+          background-color: rgba(34, 197, 94, 0.1);
+          color: #22c55e;
+      }
+
+      .status-blocked {
+          background-color: rgba(239, 68, 68, 0.1);
+          color: #ef4444;
+      }
+
+      .status-pending {
+          background-color: rgba(251, 191, 36, 0.1);
+          color: #fbbf24;
+      }
+
+      .status-review {
+          background-color: rgba(96, 165, 250, 0.1);
+          color: #60a5fa;
+      }
+
+      /* Rating Stars */
+      .rating {
+          display: flex;
+          align-items: center;
+          gap: 0.25rem;
+      }
+
+      .star {
+          color: #fbbf24;
+      }
+
+      /* Search Section */
+      .search-section {
+          margin-bottom: 2rem;
+      }
+
+      /* Tab Navigation */
+      .tab-nav {
+          display: flex;
+          border-bottom: 1px solid #333;
+          margin-bottom: 2rem;
+      }
+
+      .tab-button {
+          padding: 1rem 1.5rem;
+          background: transparent;
+          border: none;
+          color: #9ca3af;
+          font-size: 0.875rem;
+          font-weight: 500;
+          cursor: pointer;
+          border-bottom: 2px solid transparent;
+          transition: all 0.2s;
+      }
+
+      .tab-button.active {
+          color: #fff;
+          border-bottom-color: #fff;
+      }
+
+      .tab-button:hover {
+          color: #fff;
+      }
+
+      .tab-content {
+          display: none;
+      }
+
+      .tab-content.active {
+          display: block;
+      }
+
+      /* Modal Styles */
+      .modal {
+          position: fixed;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background: rgba(0, 0, 0, 0.8);
+          display: none;
+          align-items: center;
+          justify-content: center;
+          z-index: 50;
+      }
+
+      .modal.active {
+          display: flex;
+      }
+
+      .modal-content {
+          background: #1a1a1a;
+          border-radius: 0.5rem;
+          border: 1px solid #333;
+          max-width: 800px;
+          width: 90%;
+          max-height: 90vh;
+          overflow-y: auto;
+          padding: 2rem;
+      }
+
+      .modal-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 1.5rem;
+          padding-bottom: 1rem;
+          border-bottom: 1px solid #333;
+      }
+
+      .modal-close {
+          background: none;
+          border: none;
+          color: #9ca3af;
+          cursor: pointer;
+          font-size: 1.5rem;
+          padding: 0.5rem;
+      }
+
+      .modal-close:hover {
+          color: #fff;
+      }
+
+      .info-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+          gap: 1.5rem;
+          margin-bottom: 2rem;
+      }
+
+      .info-item {
+          background: #222;
+          padding: 1rem;
+          border-radius: 0.375rem;
+          border: 1px solid #333;
+      }
+
+      .info-label {
+          font-size: 0.75rem;
+          color: #9ca3af;
+          margin-bottom: 0.5rem;
+          text-transform: uppercase;
+          letter-spacing: 0.05em;
+      }
+
+      .info-value {
+          color: #fff;
+          font-weight: 500;
+      }
+
+      .info-value a {
+          color: #60a5fa;
+          text-decoration: underline;
+      }
+
+      .info-value a:hover {
+          color: #93c5fd;
+      }
+
+      .skills-list {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 0.5rem;
+      }
+
+      .skill-tag {
+          background: rgba(96, 165, 250, 0.1);
+          color: #60a5fa;
+          padding: 0.25rem 0.75rem;
+          border-radius: 9999px;
+          font-size: 0.75rem;
+          font-weight: 500;
+      }
+
+      .document-preview {
+          background: #222;
+          border: 1px solid #333;
+          border-radius: 0.375rem;
+          padding: 1rem;
+          text-align: center;
+          color: #9ca3af;
+      }
+
+      .document-link {
+          color: #60a5fa;
+          text-decoration: underline;
+          font-weight: 500;
+      }
+
+      .document-link:hover {
+          color: #93c5fd;
+      }
+
+      .modal-actions {
+          display: flex;
+          gap: 1rem;
+          justify-content: flex-end;
+          margin-top: 2rem;
+          padding-top: 1.5rem;
+          border-top: 1px solid #333;
+      }
+
+      /* Notification Badge */
+      .notification-badge {
+          position: absolute;
+          top: -0.25rem;
+          right: -0.25rem;
+          background: #dc2626;
+          color: #fff;
+          border-radius: 9999px;
+          width: 1.25rem;
+          height: 1.25rem;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 0.75rem;
+          font-weight: 600;
+      }
+
+      /* Mobile Responsiveness */
+      @media (max-width: 768px) {
+          .sidebar {
+              width: 100%;
+              position: relative;
+              height: auto;
+              border-right: none;
+              padding-bottom: 1rem;
+          }
+
+          .main-content, .header {
+              margin-left: 0;
+          }
+
+          .table-container {
+              overflow-x: auto;
+          }
+
+          .table {
+              min-width: 700px;
+          }
+
+          .modal-content {
+              width: 95%;
+              padding: 1rem;
+          }
+
+          .info-grid {
+              grid-template-columns: 1fr;
+          }
+      }
+  </style>
+</head>
+<body>
+    <div class="dashboard-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <a href="admin-dashboard.html" class="sidebar-logo">Ver<span class="faded">mento</span></a>
+            <nav class="sidebar-nav">
+                <div class="sidebar-nav-item">
+                    <a href="admin-dashboard.html" class="sidebar-nav-link">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                        <span>Dashboard</span>
+                    </a>
+                </div>
+                <div class="sidebar-nav-item">
+                    <a href="user-management.html" class="sidebar-nav-link">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                        <span>User Management</span>
+                    </a>
+                </div>
+                <div class="sidebar-nav-item">
+                    <a href="mentor-management.html" class="sidebar-nav-link active">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                        <span>Mentor Management</span>
+                        
+                    </a>
+                </div>
+                <div class="sidebar-nav-item">
+                    <a href="#bookings" class="sidebar-nav-link">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/><path d="M12 16h.01"/><path d="M8 16h.01"/><path d="M16 16h.01"/><path d="M12 12h.01"/><path d="M8 12h.01"/><path d="M16 12h.01"/></svg>
+                        <span>View & Manage Bookings</span>
+                    </a>
+                </div>
+                <div class="sidebar-nav-item">
+                    <a href="#wallet" class="sidebar-nav-link">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h12a2 2 0 0 1 0 4H5a2 2 0 0 0 0 4h12a2 2 0 0 0 2-2v-3"/><path d="M10 12H7a2 2 0 0 0-2 2v4a2 2 0 0 0 2 2h3"/></svg>
+                        <span>Financial Overview</span>
+                    </a>
+                </div>
+            </nav>
+            <div class="sidebar-footer">
+                <div class="sidebar-nav-item">
+                    <a href="/admin-profile.html" class="sidebar-nav-link">
+                        <span class="avatar h-6 w-6">
+                            <img src="https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=400" alt="Admin Profile" class="avatar-image" />
+                            <span class="avatar-fallback">AS</span>
+                        </span>
+                        <span>Admin Smith</span>
+                    </a>
+                </div>
+                <div class="sidebar-nav-item">
+                    <a href="/logout" class="sidebar-nav-link">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="17 16 22 12 17 8"/><line x1="22" x2="10" y1="12" y2="12"/></svg>
+                        <span>Logout</span>
+                    </a>
+                </div>
+            </div>
+        </aside>
+
+        <div style="flex: 1; display: flex; flex-direction: column;">
+            <!-- Header -->
+            <header class="header">
+                <div class="relative w-64">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                    <input type="text" placeholder="Search mentors..." class="input pl-9" id="globalSearch" />
+                </div>
+                <div class="nav-buttons">
+                    <a href="#" class="btn-ghost relative">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-6 w-6 text-white"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.36 14H13.64a2 2 0 0 1 2 1.73 2 2 0 0 0 2 1.73H6.36a2 2 0 0 0 2 1.73 2 2 0 0 1 2-1.73Z"/></svg>
+                        <span class="notification-badge">3</span>
+                    </a>
+                    <span class="avatar h-9 w-9">
+                        <img src="https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=400" alt="Admin Profile" class="avatar-image" />
+                        <span class="avatar-fallback">AS</span>
+                    </span>
+                    <span class="font-medium text-white">Admin Smith</span>
+                </div>
+            </header>
+
+            <!-- Main Content Area -->
+            <main class="main-content">
+                <div class="flex items-center justify-between mb-8">
+                    <h1 class="text-3xl font-bold text-white">Mentor Management</h1>
+                    <div class="flex items-center gap-4">
+                        <span class="text-gray-400">Total Mentors: <span class="text-white font-semibold">89</span></span>
+                        <span class="text-gray-400">Pending Requests: <span class="text-yellow-400 font-semibold">3</span></span>
+                    </div>
+                </div>
+
+                <!-- Tab Navigation -->
+                <div class="tab-nav">
+                    <button class="tab-button active" onclick="switchTab('approved')">Approved Mentors</button>
+                    <button class="tab-button" onclick="switchTab('requests')">
+                        Mentor Requests 
+                        <span class="notification-badge ml-2">3</span>
+                    </button>
+                </div>
+
+                <!-- Approved Mentors Tab -->
+                <div id="approved-tab" class="tab-content active">
+                    <!-- Search Section -->
+                    <div class="search-section">
+                        <div class="relative w-full">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                            <input type="text" placeholder="Search approved mentors by name, expertise, or ID..." class="input pl-9" id="mentorSearch" />
+                        </div>
+                    </div>
+
+                    <!-- Approved Mentors Table -->
+                    <div class="table-container">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Mentor</th>
+                                    <th>Expertise</th>
+                                    <th>Join Date</th>
+                                    <th>Status</th>
+                                    <th>Rating</th>
+                                    <th>Sessions</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="mentorsTableBody">
+                                <tr>
+                                    <td>
+                                        <div class="flex items-center gap-3">
+                                            <span class="avatar h-10 w-10">
+                                                <img src="https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=400" alt="Mentor" class="avatar-image" />
+                                                <span class="avatar-fallback">JD</span>
+                                            </span>
+                                            <div>
+                                                <div class="font-medium text-white">John Doe</div>
+                                                <div class="text-sm text-gray-400">ID: MNT001</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="text-gray-400">Software Engineering</td>
+                                    <td class="text-gray-400">Dec 10, 2023</td>
+                                    <td>
+                                        <span class="status-badge status-active">Active</span>
+                                    </td>
+                                    <td>
+                                        <div class="rating">
+                                            <span class="star">★</span>
+                                            <span class="text-white">4.8</span>
+                                            <span class="text-gray-400">(24)</span>
+                                        </div>
+                                    </td>
+                                    <td class="text-gray-400">87</td>
+                                    <td>
+                                        <div class="flex items-center gap-2">
+                                            <button class="btn btn-sm btn-primary" onclick="viewMentor('MNT001')">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-1"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                                                View
+                                            </button>
+                                            <button class="btn btn-sm btn-danger" onclick="toggleMentorStatus('MNT001', 'block')">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-1"><circle cx="12" cy="12" r="10"/><path d="m4.9 4.9 14.2 14.2"/></svg>
+                                                Block
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="flex items-center gap-3">
+                                            <span class="avatar h-10 w-10">
+                                                <img src="https://images.pexels.com/photos/1181424/pexels-photo-1181424.jpeg?auto=compress&cs=tinysrgb&w=400" alt="Mentor" class="avatar-image" />
+                                                <span class="avatar-fallback">EB</span>
+                                            </span>
+                                            <div>
+                                                <div class="font-medium text-white">Emily Brown</div>
+                                                <div class="text-sm text-gray-400">ID: MNT004</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="text-gray-400">UX/UI Design</td>
+                                    <td class="text-gray-400">Feb 14, 2024</td>
+                                    <td>
+                                        <span class="status-badge status-active">Active</span>
+                                    </td>
+                                    <td>
+                                        <div class="rating">
+                                            <span class="star">★</span>
+                                            <span class="text-white">4.7</span>
+                                            <span class="text-gray-400">(15)</span>
+                                        </div>
+                                    </td>
+                                    <td class="text-gray-400">29</td>
+                                    <td>
+                                        <div class="flex items-center gap-2">
+                                            <button class="btn btn-sm btn-primary" onclick="viewMentor('MNT004')">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-1"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                                                View
+                                            </button>
+                                            <button class="btn btn-sm btn-danger" onclick="toggleMentorStatus('MNT004', 'block')">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-1"><circle cx="12" cy="12" r="10"/><path d="m4.9 4.9 14.2 14.2"/></svg>
+                                                Block
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Mentor Requests Tab -->
+                <div id="requests-tab" class="tab-content">
+                    <!-- Search Section -->
+                    <div class="search-section">
+                        <div class="relative w-full">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                            <input type="text" placeholder="Search mentor requests by name, expertise, or ID..." class="input pl-9" id="requestSearch" />
+                        </div>
+                    </div>
+
+                    <!-- Mentor Requests Table -->
+                    <div class="table-container">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Applicant</th>
+                                    <th>Job Title</th>
+                                    <th>Category</th>
+                                    <th>Applied Date</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="requestsTableBody">
+                                <tr>
+                                    <td>
+                                        <div class="flex items-center gap-3">
+                                            <span class="avatar h-10 w-10">
+                                                <img src="https://images.pexels.com/photos/1181686/pexels-photo-1181686.jpeg?auto=compress&cs=tinysrgb&w=400" alt="Applicant" class="avatar-image" />
+                                                <span class="avatar-fallback">SJ</span>
+                                            </span>
+                                            <div>
+                                                <div class="font-medium text-white">Sarah Johnson</div>
+                                                <div class="text-sm text-gray-400">ID: REQ001</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="text-gray-400">Senior Data Scientist</td>
+                                    <td class="text-gray-400">Data Science</td>
+                                    <td class="text-gray-400">Jan 5, 2024</td>
+                                    <td>
+                                        <span class="status-badge status-review">Under Review</span>
+                                    </td>
+                                    <td>
+                                        <div class="flex items-center gap-2">
+                                            <button class="btn btn-sm btn-primary" onclick="reviewMentorRequest('REQ001')">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-1"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                                                Review
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="flex items-center gap-3">
+                                            <span class="avatar h-10 w-10">
+                                                <img src="https://images.pexels.com/photos/1043471/pexels-photo-1043471.jpeg?auto=compress&cs=tinysrgb&w=400" alt="Applicant" class="avatar-image" />
+                                                <span class="avatar-fallback">MW</span>
+                                            </span>
+                                            <div>
+                                                <div class="font-medium text-white">Michael Wilson</div>
+                                                <div class="text-sm text-gray-400">ID: REQ002</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="text-gray-400">Product Manager</td>
+                                    <td class="text-gray-400">Product Management</td>
+                                    <td class="text-gray-400">Jan 8, 2024</td>
+                                    <td>
+                                        <span class="status-badge status-review">Under Review</span>
+                                    </td>
+                                    <td>
+                                        <div class="flex items-center gap-2">
+                                            <button class="btn btn-sm btn-primary" onclick="reviewMentorRequest('REQ002')">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-1"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                                                Review
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="flex items-center gap-3">
+                                            <span class="avatar h-10 w-10">
+                                                <img src="https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=400" alt="Applicant" class="avatar-image" />
+                                                <span class="avatar-fallback">DL</span>
+                                            </span>
+                                            <div>
+                                                <div class="font-medium text-white">David Lee</div>
+                                                <div class="text-sm text-gray-400">ID: REQ003</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="text-gray-400">Marketing Director</td>
+                                    <td class="text-gray-400">Marketing Strategy</td>
+                                    <td class="text-gray-400">Jan 12, 2024</td>
+                                    <td>
+                                        <span class="status-badge status-review">Under Review</span>
+                                    </td>
+                                    <td>
+                                        <div class="flex items-center gap-2">
+                                            <button class="btn btn-sm btn-primary" onclick="reviewMentorRequest('REQ003')">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-1"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                                                Review
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Mentor Request Review Modal -->
+    <div id="reviewModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="text-xl font-bold text-white">Mentor Application Review</h2>
+                <button class="modal-close" onclick="closeModal()">&times;</button>
+            </div>
+            
+            <div id="modalContent">
+                <!-- Content will be populated by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sample mentor request data
+        const mentorRequests = {
+            'REQ001': {
+                fullName: 'Sarah Johnson',
+                jobTitle: 'Senior Data Scientist',
+                category: 'Data Science',
+                linkedinUrl: 'https://linkedin.com/in/sarah-johnson-ds',
+                skills: ['Python', 'Machine Learning', 'SQL', 'TensorFlow', 'Data Visualization', 'Statistics'],
+                supportingDocument: 'sarah_johnson_resume.pdf',
+                appliedDate: 'Jan 5, 2024',
+                email: 'sarah.johnson@email.com',
+                experience: '8 years',
+                company: 'TechCorp Inc.',
+                bio: 'Experienced data scientist with expertise in machine learning and statistical analysis. Passionate about mentoring the next generation of data professionals.'
+            },
+            'REQ002': {
+                fullName: 'Michael Wilson',
+                jobTitle: 'Product Manager',
+                category: 'Product Management',
+                linkedinUrl: 'https://linkedin.com/in/michael-wilson-pm',
+                skills: ['Product Strategy', 'Agile', 'User Research', 'Analytics', 'Roadmapping', 'Stakeholder Management'],
+                supportingDocument: 'michael_wilson_portfolio.pdf',
+                appliedDate: 'Jan 8, 2024',
+                email: 'michael.wilson@email.com',
+                experience: '6 years',
+                company: 'InnovateTech',
+                bio: 'Product manager with a track record of launching successful products. Experienced in leading cross-functional teams and driving product vision.'
+            },
+            'REQ003': {
+                fullName: 'David Lee',
+                jobTitle: 'Marketing Director',
+                category: 'Marketing Strategy',
+                linkedinUrl: 'https://linkedin.com/in/david-lee-marketing',
+                skills: ['Digital Marketing', 'Brand Strategy', 'Content Marketing', 'SEO/SEM', 'Analytics', 'Team Leadership'],
+                supportingDocument: 'david_lee_certifications.pdf',
+                appliedDate: 'Jan 12, 2024',
+                email: 'david.lee@email.com',
+                experience: '10 years',
+                company: 'MarketPro Agency',
+                bio: 'Marketing director with extensive experience in digital marketing and brand development. Passionate about sharing knowledge and helping others grow their marketing skills.'
+            }
+        };
+
+        // Tab switching functionality
+        function switchTab(tabName) {
+            // Hide all tab contents
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            // Remove active class from all tab buttons
+            document.querySelectorAll('.tab-button').forEach(button => {
+                button.classList.remove('active');
+            });
+            
+            // Show selected tab content
+            document.getElementById(tabName + '-tab').classList.add('active');
+            
+            // Add active class to clicked button
+            event.target.classList.add('active');
+        }
+
+        // Search functionality for approved mentors
+        document.getElementById('mentorSearch').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const tableRows = document.querySelectorAll('#mentorsTableBody tr');
+            
+            tableRows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                if (text.includes(searchTerm)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        });
+
+        // Search functionality for mentor requests
+        document.getElementById('requestSearch').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const tableRows = document.querySelectorAll('#requestsTableBody tr');
+            
+            tableRows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                if (text.includes(searchTerm)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        });
+
+        // Global search functionality
+        document.getElementById('globalSearch').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const activeTab = document.querySelector('.tab-content.active');
+            const tableRows = activeTab.querySelectorAll('tbody tr');
+            
+            tableRows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                if (text.includes(searchTerm)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        });
+
+        // Review mentor request function
+        function reviewMentorRequest(requestId) {
+            const request = mentorRequests[requestId];
+            if (!request) return;
+
+            const modalContent = document.getElementById('modalContent');
+            modalContent.innerHTML = `
+                <div class="info-grid">
+                    <div class="info-item">
+                        <div class="info-label">Full Name</div>
+                        <div class="info-value">${request.fullName}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Email</div>
+                        <div class="info-value">${request.email}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Job Title</div>
+                        <div class="info-value">${request.jobTitle}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Company</div>
+                        <div class="info-value">${request.company}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Category</div>
+                        <div class="info-value">${request.category}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Experience</div>
+                        <div class="info-value">${request.experience}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">LinkedIn URL</div>
+                        <div class="info-value">
+                            <a href="${request.linkedinUrl}" target="_blank">${request.linkedinUrl}</a>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Applied Date</div>
+                        <div class="info-value">${request.appliedDate}</div>
+                    </div>
+                </div>
+
+                <div class="info-item mb-4">
+                    <div class="info-label">Bio</div>
+                    <div class="info-value">${request.bio}</div>
+                </div>
+
+                <div class="info-item mb-4">
+                    <div class="info-label">Skills</div>
+                    <div class="skills-list">
+                        ${request.skills.map(skill => `<span class="skill-tag">${skill}</span>`).join('')}
+                    </div>
+                </div>
+
+                <div class="info-item mb-4">
+                    <div class="info-label">Supporting Document</div>
+                    <div class="document-preview">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin: 0 auto 1rem;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" x2="8" y1="13" y2="13"/><line x1="16" x2="8" y1="17" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+                        <div>
+                            <a href="#" class="document-link" onclick="viewDocument('${request.supportingDocument}')">${request.supportingDocument}</a>
+                        </div>
+                        <div class="text-xs text-gray-500 mt-2">Click to view document</div>
+                    </div>
+                </div>
+
+                <div class="modal-actions">
+                    <button class="btn btn-danger" onclick="rejectMentorRequest('${requestId}')">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-1"><line x1="18" x2="6" y1="6" y2="18"/><line x1="6" x2="18" y1="6" y2="18"/></svg>
+                        Reject Application
+                    </button>
+                    <button class="btn btn-success" onclick="approveMentorRequest('${requestId}')">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-1"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="10"/></svg>
+                        Approve & Create Account
+                    </button>
+                </div>
+            `;
+
+            document.getElementById('reviewModal').classList.add('active');
+        }
+
+        // Close modal function
+        function closeModal() {
+            document.getElementById('reviewModal').classList.remove('active');
+        }
+
+        // View document function
+        function viewDocument(documentName) {
+            alert(`Opening document: ${documentName}\n\nIn a real application, this would open the document in a new tab or download it.`);
+        }
+
+        // Approve mentor request function
+        function approveMentorRequest(requestId) {
+            if (confirm(`Are you sure you want to approve this mentor application and create their account?`)) {
+                // Remove from requests table
+                const row = document.querySelector(`[onclick="reviewMentorRequest('${requestId}')"]`).closest('tr');
+                row.remove();
+                
+                // Update notification badges
+                updateNotificationBadges();
+                
+                closeModal();
+                alert('Mentor application approved! Account created and welcome email sent.');
+            }
+        }
+
+        // Reject mentor request function
+        function rejectMentorRequest(requestId) {
+            const reason = prompt('Please provide a reason for rejection (optional):');
+            if (reason !== null) {
+                // Remove from requests table
+                const row = document.querySelector(`[onclick="reviewMentorRequest('${requestId}')"]`).closest('tr');
+                row.remove();
+                
+                // Update notification badges
+                updateNotificationBadges();
+                
+                closeModal();
+                alert('Mentor application rejected. Notification email sent to applicant.');
+            }
+        }
+
+        // Update notification badges
+        function updateNotificationBadges() {
+            const remainingRequests = document.querySelectorAll('#requestsTableBody tr').length;
+            const badges = document.querySelectorAll('.notification-badge');
+            
+            badges.forEach(badge => {
+                if (remainingRequests > 0) {
+                    badge.textContent = remainingRequests;
+                } else {
+                    badge.style.display = 'none';
+                }
+            });
+        }
+
+        // View mentor function (for approved mentors)
+        function viewMentor(mentorId) {
+            alert(`Viewing details for mentor: ${mentorId}`);
+        }
+
+        // Toggle mentor status function (for approved mentors)
+        function toggleMentorStatus(mentorId, action) {
+            const row = event.target.closest('tr');
+            const statusBadge = row.querySelector('.status-badge');
+            const actionButton = event.target.closest('button');
+            
+            if (action === 'block') {
+                if (confirm(`Are you sure you want to block mentor ${mentorId}?`)) {
+                    statusBadge.textContent = 'Blocked';
+                    statusBadge.className = 'status-badge status-blocked';
+                    actionButton.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-1"><path d="M7 10v12"/><path d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2h0a3.13 3.13 0 0 1 3 3.88Z"/></svg>Unblock';
+                    actionButton.className = 'btn btn-sm btn-success';
+                    actionButton.setAttribute('onclick', `toggleMentorStatus('${mentorId}', 'unblock')`);
+                }
+            } else if (action === 'unblock') {
+                if (confirm(`Are you sure you want to unblock mentor ${mentorId}?`)) {
+                    statusBadge.textContent = 'Active';
+                    statusBadge.className = 'status-badge status-active';
+                    actionButton.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-1"><circle cx="12" cy="12" r="10"/><path d="m4.9 4.9 14.2 14.2"/></svg>Block';
+                    actionButton.className = 'btn btn-sm btn-danger';
+                    actionButton.setAttribute('onclick', `toggleMentorStatus('${mentorId}', 'block')`);
+                }
+            }
+        }
+
+        // Close modal when clicking outside
+        document.getElementById('reviewModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+    </script>
+</body>
+</html>
+
+

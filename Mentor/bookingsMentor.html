@@ -1,0 +1,1197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bookings - Vermento</title>
+  <style>
+      /* Base Styles */
+      * {
+          margin: 0;
+          padding: 0;
+          box-sizing: border-box;
+      }
+
+      body {
+          font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+          background: #000; /* Black background */
+          color: #fff; /* Default text color for dark theme */
+          min-height: 100vh;
+          display: flex;
+          flex-direction: column;
+      }
+
+      a {
+          text-decoration: none;
+          color: inherit;
+      }
+
+      /* Utility Classes (Tailwind-like) */
+      .container {
+          max-width: 1200px;
+          margin-left: auto;
+          margin-right: auto;
+          padding-left: 1.5rem; /* px-6 */
+          padding-right: 1.5rem; /* px-6 */
+      }
+
+      .flex { display: flex; }
+      .flex-col { flex-direction: column; }
+      .flex-wrap { flex-wrap: wrap; }
+      .items-center { align-items: center; }
+      .items-start { align-items: flex-start; }
+      .justify-between { justify-content: space-between; }
+      .justify-center { justify-content: center; }
+      .gap-2 { gap: 0.5rem; }
+      .gap-3 { gap: 0.75rem; }
+      .gap-4 { gap: 1rem; }
+      .gap-6 { gap: 1.5rem; }
+      .gap-8 { gap: 2rem; }
+      .p-4 { padding: 1rem; }
+      .p-6 { padding: 1.5rem; }
+      .p-8 { padding: 2rem; }
+      .py-4 { padding-top: 1rem; padding-bottom: 1rem; }
+      .py-6 { padding-top: 1.5rem; padding-bottom: 1.5rem; }
+      .py-16 { padding-top: 4rem; padding-bottom: 4rem; }
+      .py-20 { padding-top: 5rem; padding-bottom: 5rem; }
+      .py-32 { padding-top: 8rem; padding-bottom: 8rem; }
+      .px-8 { padding-left: 2rem; padding-right: 2rem; }
+      .pl-9 { padding-left: 2.25rem; }
+      .mb-1 { margin-bottom: 0.25rem; }
+      .mb-2 { margin-bottom: 0.5rem; }
+      .mb-3 { margin-bottom: 0.75rem; }
+      .mb-4 { margin-bottom: 1rem; }
+      .mb-6 { margin-bottom: 1.5rem; }
+      .mb-8 { margin-bottom: 2rem; }
+      .mb-10 { margin-bottom: 2.5rem; }
+      .mb-12 { margin-bottom: 3rem; }
+      .mt-2 { margin-top: 0.5rem; }
+      .mt-4 { margin-top: 1rem; }
+      .mt-12 { margin-top: 3rem; }
+      .ml-2 { margin-left: 0.5rem; }
+      .mr-1 { margin-right: 0.25rem; }
+      .mr-2 { margin-right: 0.5rem; }
+      .mr-4 { margin-right: 1rem; }
+      .mx-auto { margin-left: auto; margin-right: auto; }
+      .-translate-y-1\/2 { transform: translateY(-50%); }
+
+      .relative { position: relative; }
+      .absolute { position: absolute; }
+      .left-3 { left: 0.75rem; }
+      .top-1\/2 { top: 50%; }
+
+      .w-full { width: 100%; }
+      .w-64 { width: 16rem; }
+      .w-10 { width: 2.5rem; }
+      .w-12 { width: 3rem; }
+      .w-16 { width: 4rem; }
+      .w-20 { width: 5rem; }
+      .h-4 { height: 1rem; }
+      .h-5 { height: 1.25rem; }
+      .h-6 { height: 1.5rem; }
+      .h-8 { height: 2rem; }
+      .h-9 { height: 2.25rem; }
+      .h-10 { height: 2.5rem; }
+      .h-12 { height: 3rem; }
+      .h-16 { height: 4rem; }
+      .h-20 { height: 5rem; }
+
+      .text-xs { font-size: 0.75rem; line-height: 1rem; }
+      .text-sm { font-size: 0.875rem; line-height: 1.25rem; }
+      .text-base { font-size: 1rem; line-height: 1.5rem; }
+      .text-lg { font-size: 1.125rem; line-height: 1.75rem; }
+      .text-xl { font-size: 1.25rem; line-height: 1.75rem; }
+      .text-2xl { font-size: 1.5rem; line-height: 2rem; }
+      .text-3xl { font-size: 1.875rem; line-height: 2.25rem; }
+      .text-4xl { font-size: 2.25rem; line-height: 2.5rem; }
+      .text-6xl { font-size: 3.75rem; line-height: 1; }
+      .text-7xl { font-size: 4.5rem; line-height: 1; }
+
+      .font-bold { font-weight: 700; }
+      .font-semibold { font-weight: 600; }
+      .font-medium { font-weight: 500; }
+
+      .text-white { color: #fff; }
+      .text-gray-500 { color: #9ca3af; } /* Adjusted for dark theme */
+      .text-gray-600 { color: #d1d5db; } /* Adjusted for dark theme */
+      .text-gray-700 { color: #e5e7eb; } /* Adjusted for dark theme */
+      .text-gray-300 { color: #6b7280; } /* Adjusted for dark theme */
+      .text-yellow-400 { color: #fbbf24; }
+      .text-green-400 { color: #34d399; }
+      .text-blue-400 { color: #60a5fa; }
+      .text-red-400 { color: #f87171; }
+
+      .bg-white { background-color: #1a1a1a; } /* Darker background for elements */
+      .bg-black { background-color: #000; }
+      .bg-gray-50 { background-color: #000; } /* Main background */
+      .bg-gray-200 { background-color: #333; } /* Adjusted for dark theme */
+      .bg-transparent { background-color: transparent; }
+      .bg-green-500 { background-color: #10b981; }
+      .bg-blue-500 { background-color: #3b82f6; }
+      .bg-yellow-500 { background-color: #f59e0b; }
+      .bg-red-500 { background-color: #ef4444; }
+
+      .border { border-width: 1px; border-style: solid; border-color: #333; } /* Adjusted for dark theme */
+      .border-b { border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #333; }
+      .border-t { border-top-width: 1px; border-top-style: solid; border-top-color: #333; }
+      .border-0 { border-width: 0; }
+      .border-black { border-color: #fff; } /* White border for dark theme */
+
+      .rounded-full { border-radius: 9999px; }
+      .rounded-md { border-radius: 0.375rem; }
+      .rounded-lg { border-radius: 0.5rem; }
+
+      .shadow-sm { box-shadow: none; } /* Removed shadows for minimalistic dark theme */
+      .shadow-none { box-shadow: none; }
+
+      .leading-tight { line-height: 1.25; }
+      .leading-relaxed { line-height: 1.625; }
+
+      .text-center { text-align: center; }
+
+      .transition-colors { transition-property: color, background-color, border-color, text-decoration-color, fill, stroke; transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); transition-duration: 150ms; }
+
+      .fill-black { fill: #fff; } /* White fill for icons on dark background */
+
+      .line-clamp-1 {
+          display: -webkit-box;
+          -webkit-box-orient: vertical;
+          -webkit-line-clamp: 1;
+          overflow: hidden;
+      }
+      .line-clamp-3 {
+          display: -webkit-box;
+          -webkit-box-orient: vertical;
+          -webkit-line-clamp: 3;
+          overflow: hidden;
+      }
+
+      /* Specific Component Styles */
+      .btn {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          white-space: nowrap;
+          border-radius: 0.375rem; /* rounded-md */
+          font-size: 0.875rem; /* text-sm */
+          font-weight: 500; /* font-medium */
+          height: 2.5rem; /* h-10 */
+          padding: 0 1rem; /* px-4 */
+          cursor: pointer;
+          transition: all 0.2s ease-in-out;
+          border: none;
+      }
+      .btn-ghost {
+          background-color: transparent;
+          color: #d1d5db; /* text-gray-300 */
+      }
+      .btn-ghost:hover {
+          background-color: #222; /* hover:bg-gray-800 */
+          color: #fff; /* hover:text-white */
+      }
+      .btn-primary {
+          background-color: #fff;
+          color: #000;
+      }
+      .btn-primary:hover {
+          background-color: #f0f0f0;
+      }
+      .btn-outline {
+          border: 1px solid #888; /* Lighter border for dark theme */
+          background-color: transparent;
+          color: #fff; /* White text for dark theme */
+      }
+      .btn-outline:hover {
+          background-color: #fff;
+          color: #000;
+      }
+      .btn-lg {
+          height: 3rem; /* h-12 */
+          padding: 0 2rem; /* px-8 */
+          font-size: 1.125rem; /* text-lg */
+      }
+      .btn-sm {
+          height: 2rem; /* h-8 */
+          padding: 0 0.75rem; /* px-3 */
+          font-size: 0.75rem; /* text-xs */
+      }
+
+      .card {
+          background-color: #1a1a1a; /* Darker background for cards */
+          border-radius: 0.5rem; /* rounded-lg */
+          border: 1px solid #333; /* Darker border for cards */
+          box-shadow: none; /* Removed shadows */
+          transition: all 0.3s ease-in-out; /* Added for hover effect */
+      }
+      .card:hover {
+          transform: translateY(-5px); /* Lift effect */
+          box-shadow: 0 10px 20px rgba(255, 255, 255, 0.1); /* Glow effect */
+      }
+      .card-content {
+          padding: 1.5rem; /* p-6 */
+      }
+
+      .avatar {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          border-radius: 9999px; /* rounded-full */
+          overflow: hidden;
+          position: relative;
+          flex-shrink: 0;
+      }
+      .avatar-image {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+      }
+      .avatar-fallback {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 100%;
+          height: 100%;
+          background-color: #333; /* Darker fallback background */
+          color: #eee; /* Lighter text for fallback */
+          font-weight: 600; /* font-semibold */
+      }
+
+      .input {
+          display: flex;
+          height: 2.5rem; /* h-10 */
+          width: 100%;
+          border-radius: 0.375rem; /* rounded-md */
+          border: 1px solid #444; /* Darker border for input */
+          background-color: #222; /* Darker background for input */
+          padding: 0 0.75rem; /* px-3 */
+          font-size: 0.875rem; /* text-sm */
+          box-shadow: none; /* Removed shadows */
+          transition: border-color 0.2s, box-shadow 0.2s;
+          color: #fff; /* White text for input */
+      }
+      .input:focus-visible {
+          outline: none;
+          border-color: #fff; /* White border on focus */
+          background: #333; /* Slightly lighter background on focus */
+          box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1); /* Subtle white ring */
+      }
+      .input::placeholder {
+          color: #666; /* Darker placeholder text */
+      }
+
+      /* Dashboard Layout */
+      .dashboard-layout {
+          display: flex;
+          min-height: 100vh;
+          width: 100%;
+      }
+
+      /* Sidebar Styles */
+      .sidebar {
+          position: fixed;
+          left: 0;
+          top: 0;
+          bottom: 0;
+          width: 16rem; /* Fixed expanded width */
+          background-color: #111;
+          border-right: 1px solid #333;
+          padding-top: 1.5rem;
+          z-index: 20; /* Ensure it's above main content */
+          display: flex;
+          flex-direction: column;
+          align-items: flex-start; /* Always align items to start */
+      }
+
+      .sidebar-logo {
+          font-size: 1.5rem;
+          font-weight: 700;
+          color: #fff;
+          margin-bottom: 2rem;
+          padding-left: 1rem; /* Align with menu items */
+          display: block; /* Always visible */
+      }
+      .sidebar-logo .faded {
+          color: #888;
+      }
+
+      .sidebar-nav {
+          list-style: none;
+          width: 100%;
+          padding: 0;
+          margin: 0;
+          flex-grow: 1; /* Push footer to bottom */
+      }
+
+      .sidebar-nav-item {
+          margin-bottom: 0.5rem;
+          width: 100%;
+      }
+
+      .sidebar-nav-link {
+          display: flex;
+          align-items: center;
+          padding: 0.75rem 1rem;
+          color: #aaa;
+          font-size: 0.875rem;
+          font-weight: 500;
+          border-radius: 0.375rem;
+          transition: background-color 0.2s, color 0.2s;
+          white-space: nowrap; /* Prevent text wrapping */
+          overflow: hidden; /* Hide overflow if text is too long */
+          text-overflow: ellipsis; /* Add ellipsis for truncated text */
+          justify-content: flex-start; /* Always align text to start */
+      }
+
+      .sidebar-nav-link:hover {
+          background-color: #222;
+          color: #fff;
+      }
+
+      .sidebar-nav-link.active {
+          background-color: #222;
+          color: #fff;
+      }
+
+      .sidebar-nav-link svg {
+          height: 1.25rem;
+          width: 1.25rem;
+          margin-right: 0.75rem; /* Always have margin */
+          flex-shrink: 0;
+          color: #aaa; /* Icon color */
+      }
+
+      .sidebar-nav-link span {
+          display: inline; /* Always show text */
+      }
+
+      .sidebar-footer {
+          width: 100%;
+          padding: 1rem;
+          border-top: 1px solid #333;
+          display: flex;
+          flex-direction: column;
+          align-items: flex-start; /* Always align to start */
+      }
+
+      /* Main Content Area */
+      .main-content {
+          flex: 1;
+          margin-left: 16rem; /* Fixed margin for stable sidebar */
+          padding: 1.5rem; /* p-6 */
+          overflow-y: auto; /* Allow scrolling for content */
+      }
+
+      /* Header Styles */
+      .header {
+          border-bottom: 1px solid #333; /* Darker border */
+          background-color: #111; /* Darker background for header */
+          padding: 1.5rem; /* p-6 */
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          position: sticky;
+          top: 0;
+          z-index: 10;
+          margin-left: 16rem; /* Match main-content margin */
+      }
+
+      .header .logo {
+          display: none; /* Hide logo in header, it's in sidebar now */
+      }
+
+      .nav-buttons {
+          display: flex;
+          gap: 12px;
+          align-items: center;
+      }
+
+      /* Headings in main content */
+      .main-content h1, .main-content h2 {
+          color: #fff; /* Ensure headings are white */
+      }
+
+      /* Booking Specific Styles */
+      .booking-tabs {
+          display: flex;
+          gap: 1rem;
+          margin-bottom: 2rem;
+          border-bottom: 1px solid #333;
+      }
+
+      .tab-button {
+          padding: 1rem 1.5rem;
+          background: transparent;
+          border: none;
+          color: #9ca3af;
+          font-size: 0.875rem;
+          font-weight: 500;
+          cursor: pointer;
+          border-bottom: 2px solid transparent;
+          transition: all 0.2s ease-in-out;
+      }
+
+      .tab-button:hover,
+      .tab-button.active {
+          color: #fff;
+          border-bottom-color: #fff;
+      }
+
+      .tab-content {
+          display: none;
+      }
+
+      .tab-content.active {
+          display: block;
+      }
+
+      .booking-grid {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 2rem;
+          margin-bottom: 2rem;
+      }
+
+      .booking-card {
+          background-color: #1a1a1a;
+          border-radius: 0.5rem;
+          border: 1px solid #333;
+          padding: 1.5rem;
+          transition: all 0.3s ease-in-out;
+      }
+
+      .booking-card:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 5px 15px rgba(255, 255, 255, 0.05);
+      }
+
+      .booking-header {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          margin-bottom: 1rem;
+      }
+
+      .booking-info {
+          display: flex;
+          align-items: center;
+          gap: 1rem;
+      }
+
+      .booking-avatar {
+          width: 3rem;
+          height: 3rem;
+      }
+
+      .booking-details h3 {
+          font-weight: 600;
+          color: #fff;
+          margin-bottom: 0.25rem;
+      }
+
+      .booking-details p {
+          font-size: 0.875rem;
+          color: #9ca3af;
+      }
+
+      .booking-status {
+          padding: 0.25rem 0.75rem;
+          border-radius: 1rem;
+          font-size: 0.75rem;
+          font-weight: 500;
+      }
+
+      .status-confirmed {
+          background-color: rgba(16, 185, 129, 0.2);
+          color: #10b981;
+      }
+
+      .status-pending {
+          background-color: rgba(245, 158, 11, 0.2);
+          color: #f59e0b;
+      }
+
+      .status-completed {
+          background-color: rgba(59, 130, 246, 0.2);
+          color: #3b82f6;
+      }
+
+      .status-cancelled {
+          background-color: rgba(239, 68, 68, 0.2);
+          color: #ef4444;
+      }
+
+      .booking-meta {
+          display: flex;
+          gap: 1rem;
+          margin-bottom: 1rem;
+          font-size: 0.875rem;
+          color: #9ca3af;
+      }
+
+      .booking-meta span {
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+      }
+
+      .booking-actions {
+          display: flex;
+          gap: 0.5rem;
+          justify-content: flex-end;
+      }
+
+      .calendar-container {
+          background-color: #1a1a1a;
+          border-radius: 0.5rem;
+          border: 1px solid #333;
+          padding: 1.5rem;
+          transition: all 0.3s ease-in-out;
+      }
+
+      .calendar-container:hover {
+          transform: translateY(-5px);
+          box-shadow: 0 10px 20px rgba(255, 255, 255, 0.1);
+      }
+
+      .calendar-header {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          margin-bottom: 1.5rem;
+      }
+
+      .calendar-nav {
+          display: flex;
+          gap: 0.5rem;
+      }
+
+      .calendar-grid {
+          display: grid;
+          grid-template-columns: repeat(7, 1fr);
+          gap: 0.5rem;
+      }
+
+      .calendar-day {
+          aspect-ratio: 1;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          border-radius: 0.375rem;
+          font-size: 0.875rem;
+          cursor: pointer;
+          transition: all 0.2s ease-in-out;
+          border: 1px solid transparent;
+      }
+
+      .calendar-day:hover {
+          background-color: #333;
+      }
+
+      .calendar-day.available {
+          background-color: rgba(16, 185, 129, 0.2);
+          color: #10b981;
+          border-color: #10b981;
+      }
+
+      .calendar-day.booked {
+          background-color: rgba(239, 68, 68, 0.2);
+          color: #ef4444;
+          border-color: #ef4444;
+      }
+
+      .calendar-day.selected {
+          background-color: #fff;
+          color: #000;
+      }
+
+      .time-slots {
+          margin-top: 1.5rem;
+      }
+
+      .time-slot-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+          gap: 0.5rem;
+          margin-top: 1rem;
+      }
+
+      .time-slot {
+          padding: 0.5rem;
+          border: 1px solid #333;
+          border-radius: 0.375rem;
+          text-align: center;
+          font-size: 0.875rem;
+          cursor: pointer;
+          transition: all 0.2s ease-in-out;
+      }
+
+      .time-slot:hover {
+          border-color: #fff;
+          background-color: #333;
+      }
+
+      .time-slot.available {
+          border-color: #10b981;
+          color: #10b981;
+      }
+
+      .time-slot.booked {
+          border-color: #ef4444;
+          color: #ef4444;
+          cursor: not-allowed;
+          opacity: 0.5;
+      }
+
+      .time-slot.selected {
+          background-color: #fff;
+          color: #000;
+          border-color: #fff;
+      }
+
+      /* Mobile Responsiveness */
+      @media (max-width: 768px) {
+          .sidebar {
+              width: 100%; /* Full width overlay on mobile */
+              position: relative; /* Change to relative for mobile to not overlap content */
+              height: auto; /* Adjust height based on content */
+              border-right: none;
+              padding-bottom: 1rem;
+          }
+          .sidebar-logo {
+              display: block; /* Always show logo in mobile sidebar */
+          }
+          .sidebar-nav-link {
+              justify-content: flex-start; /* Always align text to start on mobile */
+          }
+          .sidebar-nav-link svg {
+              margin-right: 0.75rem; /* Always have margin on mobile */
+          }
+          .sidebar-nav-link span {
+              display: inline; /* Always show text on mobile */
+          }
+
+          .main-content, .header {
+              margin-left: 0; /* No margin for sidebar on mobile */
+          }
+
+          .nav-buttons .w-64 {
+              width: 100%; /* Full width search bar on mobile */
+          }
+          .nav-buttons .hidden.md\:block {
+              display: none; /* Hide user name on mobile */
+          }
+
+          .booking-grid {
+              grid-template-columns: 1fr;
+          }
+
+          .booking-tabs {
+              flex-wrap: wrap;
+          }
+
+          .calendar-grid {
+              grid-template-columns: repeat(7, 1fr);
+              gap: 0.25rem;
+          }
+
+          .time-slot-grid {
+              grid-template-columns: repeat(2, 1fr);
+          }
+      }
+  </style>
+</head>
+<body>
+    <div class="dashboard-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <a href="index.html" class="sidebar-logo">Ver<span class="faded">mento</span></a>
+            <nav class="sidebar-nav">
+                <div class="sidebar-nav-item">
+                    <a href="index.html" class="sidebar-nav-link">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                        <span>Home</span>
+                    </a>
+                </div>
+                <div class="sidebar-nav-item">
+                    <a href="reviews.html" class="sidebar-nav-link">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                        <span>Reviews & Ratings</span>
+                    </a>
+                </div>
+                <div class="sidebar-nav-item">
+                    <a href="#messages" class="sidebar-nav-link">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                        <span>Messages</span>
+                    </a>
+                </div>
+                <div class="sidebar-nav-item">
+                    <a href="bookings.html" class="sidebar-nav-link active">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-6 w-6 text-white"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/><path d="M12 16h.01"/><path d="M8 16h.01"/><path d="M16 16h.01"/><path d="M12 12h.01"/><path d="M8 12h.01"/><path d="M16 12h.01"/></svg>
+                        <span>Bookings</span>
+                    </a>
+                </div>
+                <div class="sidebar-nav-item">
+                    <a href="#wallet" class="sidebar-nav-link">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h12a2 2 0 0 1 0 4H5a2 2 0 0 0 0 4h12a2 2 0 0 0 2-2v-3"/><path d="M10 12H7a2 2 0 0 0-2 2v4a2 2 0 0 0 2 2h3"/></svg>
+                        <span>Wallet</span>
+                    </a>
+                </div>
+            </nav>
+            <div class="sidebar-footer">
+                <div class="sidebar-nav-item">
+                    <a href="/user-profile.html" class="sidebar-nav-link">
+                        <span class="avatar h-6 w-6">
+                            <img src="https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=400" alt="User Profile" class="avatar-image" />
+                            <span class="avatar-fallback">JD</span>
+                        </span>
+                        <span>John Doe</span>
+                    </a>
+                </div>
+                <div class="sidebar-nav-item">
+                    <a href="/logout" class="sidebar-nav-link">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="17 16 22 12 17 8"/><line x1="22" x2="10" y1="12" y2="12"/></svg>
+                        <span>Logout</span>
+                    </a>
+                </div>
+            </div>
+        </aside>
+
+        <div style="flex: 1; display: flex; flex-direction: column;">
+            <!-- Header -->
+            <header class="header">
+                <div class="relative w-64">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                    <input type="text" placeholder="Search bookings..." class="input pl-9" />
+                </div>
+                <div class="nav-buttons">
+                    <a href="#" class="btn-ghost">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-6 w-6 text-white"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.36 14H13.64a2 2 0 0 1 2 1.73 2 2 0 0 0 2 1.73H6.36a2 2 0 0 0 2 1.73 2 2 0 0 1 2-1.73Z"/></svg>
+                    </a>
+                    <span class="avatar h-9 w-9">
+                        <img src="https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=400" alt="User Profile" class="avatar-image" />
+                        <span class="avatar-fallback">JD</span>
+                    </span>
+                    <span class="font-medium text-white hidden md:block">John Doe</span>
+                </div>
+            </header>
+
+            <!-- Main Content Area -->
+            <main class="main-content">
+                <h1 class="text-3xl font-bold mb-8 text-white">Bookings Management</h1>
+
+                <!-- Tabs -->
+                <div class="booking-tabs">
+                    <button class="tab-button active" data-tab="scheduled">Scheduled Sessions</button>
+                    <button class="tab-button" data-tab="availability">Manage Availability</button>
+                </div>
+
+                <!-- Scheduled Sessions Tab -->
+                <div id="scheduled" class="tab-content active">
+                    <div class="booking-grid">
+                        <!-- Booking Card 1 -->
+                        <div class="booking-card">
+                            <div class="booking-header">
+                                <div class="booking-info">
+                                    <span class="avatar booking-avatar">
+                                        <img src="https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=400" alt="Sarah Johnson" class="avatar-image" />
+                                        <span class="avatar-fallback">SJ</span>
+                                    </span>
+                                    <div class="booking-details">
+                                        <h3>Sarah Johnson</h3>
+                                        <p>React Development Session</p>
+                                    </div>
+                                </div>
+                                <span class="booking-status status-confirmed">Confirmed</span>
+                            </div>
+                            <div class="booking-meta">
+                                <span>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg>
+                                    Today, 2:00 PM
+                                </span>
+                                <span>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                                    1 hour
+                                </span>
+                                <span>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" x2="12" y1="1" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                                    $75
+                                </span>
+                            </div>
+                            <div class="booking-actions">
+                                <button class="btn btn-outline btn-sm">Message</button>
+                                <button class="btn btn-primary btn-sm">Join Session</button>
+                            </div>
+                        </div>
+
+                        <!-- Booking Card 2 -->
+                        <div class="booking-card">
+                            <div class="booking-header">
+                                <div class="booking-info">
+                                    <span class="avatar booking-avatar">
+                                        <img src="https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?auto=compress&cs=tinysrgb&w=400" alt="Michael Chen" class="avatar-image" />
+                                        <span class="avatar-fallback">MC</span>
+                                    </span>
+                                    <div class="booking-details">
+                                        <h3>Michael Chen</h3>
+                                        <p>Node.js Backend Development</p>
+                                    </div>
+                                </div>
+                                <span class="booking-status status-pending">Pending</span>
+                            </div>
+                            <div class="booking-meta">
+                                <span>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg>
+                                    Tomorrow, 10:00 AM
+                                </span>
+                                <span>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                                    1.5 hours
+                                </span>
+                                <span>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" x2="12" y1="1" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                                    $100
+                                </span>
+                            </div>
+                            <div class="booking-actions">
+                                <button class="btn btn-outline btn-sm">Decline</button>
+                                <button class="btn btn-primary btn-sm">Accept</button>
+                            </div>
+                        </div>
+
+                        <!-- Booking Card 3 -->
+                        <div class="booking-card">
+                            <div class="booking-header">
+                                <div class="booking-info">
+                                    <span class="avatar booking-avatar">
+                                        <img src="https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=400" alt="Emily Rodriguez" class="avatar-image" />
+                                        <span class="avatar-fallback">ER</span>
+                                    </span>
+                                    <div class="booking-details">
+                                        <h3>Emily Rodriguez</h3>
+                                        <p>CSS & Responsive Design</p>
+                                    </div>
+                                </div>
+                                <span class="booking-status status-completed">Completed</span>
+                            </div>
+                            <div class="booking-meta">
+                                <span>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg>
+                                    Yesterday, 3:00 PM
+                                </span>
+                                <span>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                                    1 hour
+                                </span>
+                                <span>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" x2="12" y1="1" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                                    $75
+                                </span>
+                            </div>
+                            <div class="booking-actions">
+                                <button class="btn btn-outline btn-sm">View Notes</button>
+                                <button class="btn btn-ghost btn-sm">Message</button>
+                            </div>
+                        </div>
+
+                        <!-- Booking Card 4 -->
+                        <div class="booking-card">
+                            <div class="booking-header">
+                                <div class="booking-info">
+                                    <span class="avatar booking-avatar">
+                                        <img src="https://images.pexels.com/photos/1681010/pexels-photo-1681010.jpeg?auto=compress&cs=tinysrgb&w=400" alt="David Kim" class="avatar-image" />
+                                        <span class="avatar-fallback">DK</span>
+                                    </span>
+                                    <div class="booking-details">
+                                        <h3>David Kim</h3>
+                                        <p>Full-Stack Development</p>
+                                    </div>
+                                </div>
+                                <span class="booking-status status-confirmed">Confirmed</span>
+                            </div>
+                            <div class="booking-meta">
+                                <span>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg>
+                                    Friday, 4:00 PM
+                                </span>
+                                <span>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                                    2 hours
+                                </span>
+                                <span>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" x2="12" y1="1" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                                    $150
+                                </span>
+                            </div>
+                            <div class="booking-actions">
+                                <button class="btn btn-outline btn-sm">Reschedule</button>
+                                <button class="btn btn-ghost btn-sm">Message</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Manage Availability Tab -->
+                <div id="availability" class="tab-content">
+                    <div class="booking-grid">
+                        <!-- Calendar -->
+                        <div class="calendar-container">
+                            <div class="calendar-header">
+                                <h3 class="text-lg font-semibold text-white">January 2024</h3>
+                                <div class="calendar-nav">
+                                    <button class="btn btn-ghost btn-sm">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+                                    </button>
+                                    <button class="btn btn-ghost btn-sm">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="calendar-grid">
+                                <div class="calendar-day text-gray-500">S</div>
+                                <div class="calendar-day text-gray-500">M</div>
+                                <div class="calendar-day text-gray-500">T</div>
+                                <div class="calendar-day text-gray-500">W</div>
+                                <div class="calendar-day text-gray-500">T</div>
+                                <div class="calendar-day text-gray-500">F</div>
+                                <div class="calendar-day text-gray-500">S</div>
+                                <div class="calendar-day"></div>
+                                <div class="calendar-day">1</div>
+                                <div class="calendar-day">2</div>
+                                <div class="calendar-day">3</div>
+                                <div class="calendar-day">4</div>
+                                <div class="calendar-day">5</div>
+                                <div class="calendar-day">6</div>
+                                <div class="calendar-day">7</div>
+                                <div class="calendar-day">8</div>
+                                <div class="calendar-day">9</div>
+                                <div class="calendar-day">10</div>
+                                <div class="calendar-day">11</div>
+                                <div class="calendar-day">12</div>
+                                <div class="calendar-day">13</div>
+                                <div class="calendar-day">14</div>
+                                <div class="calendar-day available">15</div>
+                                <div class="calendar-day available">16</div>
+                                <div class="calendar-day booked">17</div>
+                                <div class="calendar-day available">18</div>
+                                <div class="calendar-day available">19</div>
+                                <div class="calendar-day">20</div>
+                                <div class="calendar-day">21</div>
+                                <div class="calendar-day available">22</div>
+                                <div class="calendar-day available">23</div>
+                                <div class="calendar-day booked">24</div>
+                                <div class="calendar-day available selected">25</div>
+                                <div class="calendar-day available">26</div>
+                                <div class="calendar-day">27</div>
+                                <div class="calendar-day">28</div>
+                                <div class="calendar-day available">29</div>
+                                <div class="calendar-day available">30</div>
+                                <div class="calendar-day available">31</div>
+                                <div class="calendar-day"></div>
+                                <div class="calendar-day"></div>
+                                <div class="calendar-day"></div>
+                            </div>
+                            <div class="time-slots">
+                                <h4 class="text-base font-medium text-white mb-2">Available Time Slots - Jan 25</h4>
+                                <div class="time-slot-grid">
+                                    <div class="time-slot available">9:00 AM</div>
+                                    <div class="time-slot available">10:00 AM</div>
+                                    <div class="time-slot booked">11:00 AM</div>
+                                    <div class="time-slot available">1:00 PM</div>
+                                    <div class="time-slot available selected">2:00 PM</div>
+                                    <div class="time-slot available">3:00 PM</div>
+                                    <div class="time-slot available">4:00 PM</div>
+                                    <div class="time-slot available">5:00 PM</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Availability Settings -->
+                        <div class="calendar-container">
+                            <h3 class="text-lg font-semibold text-white mb-4">Availability Settings</h3>
+                            
+                            <div class="mb-6">
+                                <h4 class="text-base font-medium text-white mb-3">Weekly Schedule</h4>
+                                <div class="flex flex-col gap-3">
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-sm text-gray-600">Monday</span>
+                                        <div class="flex gap-2">
+                                            <input type="time" value="09:00" class="input" style="width: 100px;">
+                                            <span class="text-gray-500">to</span>
+                                            <input type="time" value="17:00" class="input" style="width: 100px;">
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-sm text-gray-600">Tuesday</span>
+                                        <div class="flex gap-2">
+                                            <input type="time" value="09:00" class="input" style="width: 100px;">
+                                            <span class="text-gray-500">to</span>
+                                            <input type="time" value="17:00" class="input" style="width: 100px;">
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-sm text-gray-600">Wednesday</span>
+                                        <div class="flex gap-2">
+                                            <input type="time" value="09:00" class="input" style="width: 100px;">
+                                            <span class="text-gray-500">to</span>
+                                            <input type="time" value="17:00" class="input" style="width: 100px;">
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-sm text-gray-600">Thursday</span>
+                                        <div class="flex gap-2">
+                                            <input type="time" value="09:00" class="input" style="width: 100px;">
+                                            <span class="text-gray-500">to</span>
+                                            <input type="time" value="17:00" class="input" style="width: 100px;">
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-sm text-gray-600">Friday</span>
+                                        <div class="flex gap-2">
+                                            <input type="time" value="09:00" class="input" style="width: 100px;">
+                                            <span class="text-gray-500">to</span>
+                                            <input type="time" value="17:00" class="input" style="width: 100px;">
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-sm text-gray-600">Saturday</span>
+                                        <div class="flex gap-2">
+                                            <input type="time" value="10:00" class="input" style="width: 100px;">
+                                            <span class="text-gray-500">to</span>
+                                            <input type="time" value="14:00" class="input" style="width: 100px;">
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-sm text-gray-600">Sunday</span>
+                                        <span class="text-sm text-gray-500">Unavailable</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mb-6">
+                                <h4 class="text-base font-medium text-white mb-3">Session Duration</h4>
+                                <select class="input">
+                                    <option>30 minutes</option>
+                                    <option selected>1 hour</option>
+                                    <option>1.5 hours</option>
+                                    <option>2 hours</option>
+                                </select>
+                            </div>
+
+                            <div class="mb-6">
+                                <h4 class="text-base font-medium text-white mb-3">Buffer Time</h4>
+                                <select class="input">
+                                    <option>No buffer</option>
+                                    <option selected>15 minutes</option>
+                                    <option>30 minutes</option>
+                                    <option>45 minutes</option>
+                                </select>
+                            </div>
+
+                            <div class="flex gap-2">
+                                <button class="btn btn-primary">Save Changes</button>
+                                <button class="btn btn-outline">Reset</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        // Tab functionality
+        const tabButtons = document.querySelectorAll('.tab-button');
+        const tabContents = document.querySelectorAll('.tab-content');
+
+        tabButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const tabId = button.getAttribute('data-tab');
+                
+                // Remove active class from all buttons and contents
+                tabButtons.forEach(btn => btn.classList.remove('active'));
+                tabContents.forEach(content => content.classList.remove('active'));
+                
+                // Add active class to clicked button and corresponding content
+                button.classList.add('active');
+                document.getElementById(tabId).classList.add('active');
+            });
+        });
+
+        // Calendar functionality
+        const calendarDays = document.querySelectorAll('.calendar-day');
+        const timeSlots = document.querySelectorAll('.time-slot');
+
+        calendarDays.forEach(day => {
+            day.addEventListener('click', () => {
+                if (day.textContent && !day.classList.contains('booked')) {
+                    // Remove selected class from all days
+                    calendarDays.forEach(d => d.classList.remove('selected'));
+                    // Add selected class to clicked day
+                    day.classList.add('selected');
+                    
+                    // Update time slots header
+                    const slotsHeader = document.querySelector('.time-slots h4');
+                    slotsHeader.textContent = `Available Time Slots - Jan ${day.textContent}`;
+                }
+            });
+        });
+
+        timeSlots.forEach(slot => {
+            slot.addEventListener('click', () => {
+                if (!slot.classList.contains('booked')) {
+                    // Remove selected class from all slots
+                    timeSlots.forEach(s => s.classList.remove('selected'));
+                    // Add selected class to clicked slot
+                    slot.classList.add('selected');
+                }
+            });
+        });
+
+        // Search functionality
+        const searchInput = document.querySelector('.input');
+        searchInput.addEventListener('input', (e) => {
+            const searchTerm = e.target.value.toLowerCase();
+            const bookingCards = document.querySelectorAll('.booking-card');
+            
+            bookingCards.forEach(card => {
+                const menteeNameElement = card.querySelector('.booking-details h3');
+                const sessionTypeElement = card.querySelector('.booking-details p');
+                
+                if (menteeNameElement && sessionTypeElement) {
+                    const menteeName = menteeNameElement.textContent.toLowerCase();
+                    const sessionType = sessionTypeElement.textContent.toLowerCase();
+                    
+                    const matchesSearch = menteeName.includes(searchTerm) || sessionType.includes(searchTerm);
+                    card.style.display = matchesSearch ? 'block' : 'none';
+                }
+            });
+        });
+
+        // Booking action handlers
+        document.addEventListener('click', (e) => {
+            if (e.target.textContent === 'Accept') {
+                const statusElement = e.target.closest('.booking-card').querySelector('.booking-status');
+                statusElement.textContent = 'Confirmed';
+                statusElement.className = 'booking-status status-confirmed';
+                
+                const actionsContainer = e.target.parentElement;
+                actionsContainer.innerHTML = `
+                    <button class="btn btn-outline btn-sm">Message</button>
+                    <button class="btn btn-primary btn-sm">Join Session</button>
+                `;
+            }
+            
+            if (e.target.textContent === 'Decline') {
+                const statusElement = e.target.closest('.booking-card').querySelector('.booking-status');
+                statusElement.textContent = 'Cancelled';
+                statusElement.className = 'booking-status status-cancelled';
+                
+                const actionsContainer = e.target.parentElement;
+                actionsContainer.innerHTML = `
+                    <button class="btn btn-ghost btn-sm">Message</button>
+                `;
+            }
+        });
+    </script>
+</body>
+</html>

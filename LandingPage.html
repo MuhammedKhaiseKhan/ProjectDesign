@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vermento - Mentorship for Everyone</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #000;
+            color: #fff;
+        }
+        .gradient-bg {
+            background: linear-gradient(135deg, #000 0%, #111 50%, #000 100%);
+            background-size: 400% 400%;
+            animation: gradientShift 8s ease-in-out infinite;
+        }
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+        .text-gradient {
+            background: linear-gradient(135deg, #fff 0%, #ccc 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(255, 255, 255, 0.1);
+        }
+        .btn-primary {
+            background: #fff;
+            color: #000;
+            transition: all 0.3s ease;
+        }
+        .btn-primary:hover {
+            background: #f0f0f0;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(255, 255, 255, 0.2);
+        }
+        .btn-secondary {
+            border: 1px solid #333;
+            color: #fff;
+            transition: all 0.3s ease;
+        }
+        .btn-secondary:hover {
+            border-color: #fff;
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
+        }
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeInUp 0.8s ease forwards;
+        }
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .stagger-1 { animation-delay: 0.1s; }
+        .stagger-2 { animation-delay: 0.2s; }
+        .stagger-3 { animation-delay: 0.3s; }
+        .stagger-4 { animation-delay: 0.4s; }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="fixed top-0 w-full z-50 transition-all duration-300 bg-transparent">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <div class="text-xl font-bold text-white">
+                        Ver<span class="text-gray-400">mento</span>
+                    </div>
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-8">
+                        <a href="#" class="text-gray-300 hover:text-white px-3 py-2 text-sm font-medium transition-colors duration-200">Home</a>
+                        <a href="#" class="text-gray-300 hover:text-white px-3 py-2 text-sm font-medium transition-colors duration-200">Find Mentors</a>
+                        <a href="#" class="text-gray-300 hover:text-white px-3 py-2 text-sm font-medium transition-colors duration-200">For Mentors</a>
+                        <a href="#" class="text-gray-300 hover:text-white px-3 py-2 text-sm font-medium transition-colors duration-200">Pricing</a>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button class="text-gray-300 hover:text-white px-3 py-2 text-sm font-medium transition-colors duration-200">Login</button>
+                    <button class="btn-primary px-4 py-2 rounded-lg text-sm font-medium">Sign Up</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <section class="gradient-bg min-h-screen flex items-center justify-center relative overflow-hidden">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <div class="fade-in stagger-1">
+                <h1 class="text-5xl md:text-7xl font-black mb-6 text-gradient leading-tight">
+                    Achieve Your Goals with<br />Expert Mentors
+                </h1>
+            </div>
+            <div class="fade-in stagger-2">
+                <p class="text-xl md:text-2xl text-gray-300 mb-8 max-w-3xl mx-auto leading-relaxed">
+                    Vermento connects you with industry experts in business, tech, creative fields, and more to accelerate your journey through personalized mentorship.
+                </p>
+            </div>
+            <div class="fade-in stagger-3 flex flex-col sm:flex-row gap-4 justify-center items-center">
+                <button class="btn-primary px-8 py-4 rounded-lg text-lg font-semibold">Find a Mentor</button>
+                <button class="btn-secondary px-8 py-4 rounded-lg text-lg font-semibold">Become a Mentor</button>
+            </div>
+        </div>
+        <!-- Animated background elements -->
+        <div class="absolute inset-0 overflow-hidden pointer-events-none">
+            <div class="absolute top-1/4 left-1/4 w-64 h-64 bg-white/5 rounded-full blur-3xl animate-pulse"></div>
+            <div class="absolute bottom-1/4 right-1/4 w-96 h-96 bg-white/3 rounded-full blur-3xl animate-pulse" style="animation-delay: 2s;"></div>
+        </div>
+    </section>
+
+    <!-- Features -->
+    <section class="py-24 bg-black">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16 fade-in">
+                <h2 class="text-4xl md:text-5xl font-bold mb-6 text-gradient">Why Choose Vermento?</h2>
+                <p class="text-xl text-gray-400 max-w-3xl mx-auto">
+                    Experience accelerated growth through expert guidance, tailored support, and hands-on mentorship across any field.
+                </p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <!-- Feature Card 1 -->
+                <div class="card-hover bg-gray-900/50 border border-gray-800 rounded-xl p-8 fade-in stagger-1">
+                    <div class="text-4xl mb-6">👥</div>
+                    <h3 class="text-2xl font-bold mb-4 text-white">1:1 Mentorship</h3>
+                    <p class="text-gray-400 leading-relaxed">Get personalized guidance from experienced mentors who understand your goals in business, tech, or creative pursuits.</p>
+                </div>
+                <!-- Feature Card 2 -->
+                <div class="card-hover bg-gray-900/50 border border-gray-800 rounded-xl p-8 fade-in stagger-2">
+                    <div class="text-4xl mb-6">🎯</div>
+                    <h3 class="text-2xl font-bold mb-4 text-white">Tailored Guidance</h3>
+                    <p class="text-gray-400 leading-relaxed">Custom mentorship plans designed for your unique aspirations, whether in business, technology, or other fields.</p>
+                </div>
+                <!-- Feature Card 3 -->
+                <div class="card-hover bg-gray-900/50 border border-gray-800 rounded-xl p-8 fade-in stagger-3">
+                    <div class="text-4xl mb-6">🚀</div>
+                    <h3 class="text-2xl font-bold mb-4 text-white">Goal-Oriented Mentorship</h3>
+                    <p class="text-gray-400 leading-relaxed">Work on real-world goals with mentor support to achieve success in your chosen field.</p>
+                </div>
+                <!-- Feature Card 4 -->
+                <div class="card-hover bg-gray-900/50 border border-gray-800 rounded-xl p-8 fade-in stagger-4">
+                    <div class="text-4xl mb-6">🌟</div>
+                    <h3 class="text-2xl font-bold mb-4 text-white">Community Support</h3>
+                    <p class="text-gray-400 leading-relaxed">Join a vibrant community of learners and mentors sharing knowledge across industries.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section class="py-24 bg-gray-950">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16 fade-in">
+                <h2 class="text-4xl md:text-5xl font-bold mb-6 text-gradient">Success Stories</h2>
+                <p class="text-xl text-gray-400 max-w-3xl mx-auto">Hear from individuals who transformed their careers through mentorship.</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Testimonial Card 1 -->
+                <div class="card-hover bg-gray-900/30 border border-gray-800 rounded-xl p-8 fade-in stagger-1">
+                    <div class="text-6xl text-gray-600 mb-4">"</div>
+                    <p class="text-lg text-gray-300 mb-6 leading-relaxed">My mentor helped me launch my startup in just 6 months. The personalized business advice was invaluable.</p>
+                    <div>
+                        <div class="font-semibold text-white">Sarah Chen</div>
+                        <div class="text-gray-400 text-sm">Entrepreneur, TechStartup</div>
+                    </div>
+                </div>
+                <!-- Testimonial Card 2 -->
+                <div class="card-hover bg-gray-900/30 border border-gray-800 rounded-xl p-8 fade-in stagger-2">
+                    <div class="text-6xl text-gray-600 mb-4">"</div>
+                    <p class="text-lg text-gray-300 mb-6 leading-relaxed">Being a mentor on Vermento has been rewarding. Helping others grow in their careers is truly fulfilling.</p>
+                    <div>
+                        <div class="font-semibold text-white">Marcus Johnson</div>
+                        <div class="text-gray-400 text-sm">Business Consultant</div>
+                    </div>
+                </div>
+                <!-- Testimonial Card 3 -->
+                <div class="card-hover bg-gray-900/30 border border-gray-800 rounded-xl p-8 fade-in stagger-3">
+                    <div class="text-6xl text-gray-600 mb-4">"</div>
+                    <p class="text-lg text-gray-300 mb-6 leading-relaxed">The mentorship helped me transition into a creative director role. Highly recommend Vermento!</p>
+                    <div>
+                        <div class="font-semibold text-white">Alex Rivera</div>
+                        <div class="text-gray-400 text-sm">Creative Director at DesignCo</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="py-24 bg-black">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <div class="fade-in">
+                <h2 class="text-4xl md:text-5xl font-bold mb-6 text-gradient">Ready to Start Your Journey?</h2>
+                <p class="text-xl text-gray-400 mb-8 leading-relaxed">Join thousands of professionals accelerating their careers through expert mentorship in any field.</p>
+                <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+                    <button class="btn-primary px-8 py-4 rounded-lg text-lg font-semibold">Get Started Today</button>
+                    <button class="btn-secondary px-8 py-4 rounded-lg text-lg font-semibold">Learn More</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-950 border-t border-gray-800 py-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div class="col-span-1 md:col-span-2">
+                    <div class="text-2xl font-bold text-white mb-4">
+                        Ver<span class="text-gray-400">mento</span>
+                    </div>
+                    <p class="text-gray-400 mb-6 max-w-md">
+                        Connecting professionals with industry experts to accelerate growth in business, tech, creative fields, and beyond.
+                    </p>
+                </div>
+                <div>
+                    <h3 class="text-white font-semibold mb-4">Platform</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors duration-200">Find Mentors</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors duration-200">Become a Mentor</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors duration-200">Pricing</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors duration-200">How it Works</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-white font-semibold mb-4">Company</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors duration-200">About</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors duration-200">Contact</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors duration-200">Privacy Policy</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors duration-200">Terms of Service</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-gray-800 mt-12 pt-8 text-center">
+                <p class="text-gray-400">© 2025 Vermento. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Management - Vermento Admin</title>
+  <style>
+      /* Base Styles */
+      * {
+          margin: 0;
+          padding: 0;
+          box-sizing: border-box;
+      }
+
+      body {
+          font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+          background: #000;
+          color: #fff;
+          min-height: 100vh;
+          display: flex;
+          flex-direction: column;
+      }
+
+      a {
+          text-decoration: none;
+          color: inherit;
+      }
+
+      /* Utility Classes */
+      .container {
+          max-width: 1200px;
+          margin-left: auto;
+          margin-right: auto;
+          padding-left: 1.5rem;
+          padding-right: 1.5rem;
+      }
+
+      .flex { display: flex; }
+      .flex-col { flex-direction: column; }
+      .items-center { align-items: center; }
+      .justify-between { justify-content: space-between; }
+      .justify-center { justify-content: center; }
+      .gap-2 { gap: 0.5rem; }
+      .gap-4 { gap: 1rem; }
+      .gap-6 { gap: 1.5rem; }
+      .p-4 { padding: 1rem; }
+      .p-6 { padding: 1.5rem; }
+      .py-4 { padding-top: 1rem; padding-bottom: 1rem; }
+      .px-4 { padding-left: 1rem; padding-right: 1rem; }
+      .px-6 { padding-left: 1.5rem; padding-right: 1.5rem; }
+      .pl-9 { padding-left: 2.25rem; }
+      .mb-2 { margin-bottom: 0.5rem; }
+      .mb-4 { margin-bottom: 1rem; }
+      .mb-6 { margin-bottom: 1.5rem; }
+      .mb-8 { margin-bottom: 2rem; }
+      .mr-2 { margin-right: 0.5rem; }
+      .mr-3 { margin-right: 0.75rem; }
+      .ml-2 { margin-left: 0.5rem; }
+      .-translate-y-1\/2 { transform: translateY(-50%); }
+
+      .relative { position: relative; }
+      .absolute { position: absolute; }
+      .left-3 { left: 0.75rem; }
+      .top-1\/2 { top: 50%; }
+
+      .w-full { width: 100%; }
+      .w-64 { width: 16rem; }
+      .w-10 { width: 2.5rem; }
+      .w-12 { width: 3rem; }
+      .h-4 { height: 1rem; }
+      .h-6 { height: 1.5rem; }
+      .h-8 { height: 2rem; }
+      .h-9 { height: 2.25rem; }
+      .h-10 { height: 2.5rem; }
+      .h-12 { height: 3rem; }
+
+      .text-xs { font-size: 0.75rem; line-height: 1rem; }
+      .text-sm { font-size: 0.875rem; line-height: 1.25rem; }
+      .text-base { font-size: 1rem; line-height: 1.5rem; }
+      .text-lg { font-size: 1.125rem; line-height: 1.75rem; }
+      .text-xl { font-size: 1.25rem; line-height: 1.75rem; }
+      .text-2xl { font-size: 1.5rem; line-height: 2rem; }
+      .text-3xl { font-size: 1.875rem; line-height: 2.25rem; }
+
+      .font-bold { font-weight: 700; }
+      .font-semibold { font-weight: 600; }
+      .font-medium { font-weight: 500; }
+
+      .text-white { color: #fff; }
+      .text-gray-400 { color: #9ca3af; }
+      .text-gray-500 { color: #6b7280; }
+      .text-gray-600 { color: #4b5563; }
+      .text-green-400 { color: #34d399; }
+      .text-red-400 { color: #f87171; }
+
+      .bg-gray-800 { background-color: #1f2937; }
+      .bg-gray-900 { background-color: #111827; }
+      .bg-green-600 { background-color: #059669; }
+      .bg-red-600 { background-color: #dc2626; }
+      .bg-blue-600 { background-color: #2563eb; }
+
+      .border { border-width: 1px; border-style: solid; border-color: #333; }
+      .border-b { border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #333; }
+      .border-gray-700 { border-color: #374151; }
+
+      .rounded-full { border-radius: 9999px; }
+      .rounded-md { border-radius: 0.375rem; }
+      .rounded-lg { border-radius: 0.5rem; }
+
+      .text-center { text-align: center; }
+
+      /* Dashboard Layout */
+      .dashboard-layout {
+          display: flex;
+          min-height: 100vh;
+          width: 100%;
+      }
+
+      /* Sidebar Styles */
+      .sidebar {
+          position: fixed;
+          left: 0;
+          top: 0;
+          bottom: 0;
+          width: 16rem;
+          background-color: #111;
+          border-right: 1px solid #333;
+          padding-top: 1.5rem;
+          z-index: 20;
+          display: flex;
+          flex-direction: column;
+          align-items: flex-start;
+      }
+
+      .sidebar-logo {
+          font-size: 1.5rem;
+          font-weight: 700;
+          color: #fff;
+          margin-bottom: 2rem;
+          padding-left: 1rem;
+          display: block;
+      }
+      .sidebar-logo .faded {
+          color: #888;
+      }
+
+      .sidebar-nav {
+          list-style: none;
+          width: 100%;
+          padding: 0;
+          margin: 0;
+          flex-grow: 1;
+      }
+
+      .sidebar-nav-item {
+          margin-bottom: 0.5rem;
+          width: 100%;
+      }
+
+      .sidebar-nav-link {
+          display: flex;
+          align-items: center;
+          padding: 0.75rem 1rem;
+          color: #aaa;
+          font-size: 0.875rem;
+          font-weight: 500;
+          border-radius: 0.375rem;
+          transition: background-color 0.2s, color 0.2s;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          justify-content: flex-start;
+      }
+
+      .sidebar-nav-link:hover {
+          background-color: #222;
+          color: #fff;
+      }
+
+      .sidebar-nav-link.active {
+          background-color: #222;
+          color: #fff;
+      }
+
+      .sidebar-nav-link svg {
+          height: 1.25rem;
+          width: 1.25rem;
+          margin-right: 0.75rem;
+          flex-shrink: 0;
+          color: #aaa;
+      }
+
+      .sidebar-nav-link span {
+          display: inline;
+      }
+
+      .sidebar-footer {
+          width: 100%;
+          padding: 1rem;
+          border-top: 1px solid #333;
+          display: flex;
+          flex-direction: column;
+          align-items: flex-start;
+      }
+
+      /* Main Content Area */
+      .main-content {
+          flex: 1;
+          margin-left: 16rem;
+          padding: 1.5rem;
+          overflow-y: auto;
+      }
+
+      /* Header Styles */
+      .header {
+          border-bottom: 1px solid #333;
+          background-color: #111;
+          padding: 1.5rem;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          position: sticky;
+          top: 0;
+          z-index: 10;
+          margin-left: 16rem;
+      }
+
+      .nav-buttons {
+          display: flex;
+          gap: 12px;
+          align-items: center;
+      }
+
+      /* Avatar Styles */
+      .avatar {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          border-radius: 9999px;
+          overflow: hidden;
+          position: relative;
+          flex-shrink: 0;
+      }
+      .avatar-image {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+      }
+      .avatar-fallback {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 100%;
+          height: 100%;
+          background-color: #333;
+          color: #eee;
+          font-weight: 600;
+      }
+
+      /* Input Styles */
+      .input {
+          display: flex;
+          height: 2.5rem;
+          width: 100%;
+          border-radius: 0.375rem;
+          border: 1px solid #444;
+          background-color: #222;
+          padding: 0 0.75rem;
+          font-size: 0.875rem;
+          box-shadow: none;
+          transition: border-color 0.2s, box-shadow 0.2s;
+          color: #fff;
+      }
+      .input:focus-visible {
+          outline: none;
+          border-color: #fff;
+          background: #333;
+          box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
+      }
+      .input::placeholder {
+          color: #666;
+      }
+
+      /* Button Styles */
+      .btn {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          white-space: nowrap;
+          border-radius: 0.375rem;
+          font-size: 0.875rem;
+          font-weight: 500;
+          height: 2.5rem;
+          padding: 0 1rem;
+          cursor: pointer;
+          transition: all 0.2s ease-in-out;
+          border: none;
+      }
+      .btn-ghost {
+          background-color: transparent;
+          color: #d1d5db;
+      }
+      .btn-ghost:hover {
+          background-color: #222;
+          color: #fff;
+      }
+      .btn-primary {
+          background-color: #fff;
+          color: #000;
+      }
+      .btn-primary:hover {
+          background-color: #f0f0f0;
+      }
+      .btn-success {
+          background-color: #059669;
+          color: #fff;
+      }
+      .btn-success:hover {
+          background-color: #047857;
+      }
+      .btn-danger {
+          background-color: #dc2626;
+          color: #fff;
+      }
+      .btn-danger:hover {
+          background-color: #b91c1c;
+      }
+      .btn-sm {
+          height: 2rem;
+          padding: 0 0.75rem;
+          font-size: 0.75rem;
+      }
+
+      /* Table Styles */
+      .table-container {
+          background-color: #1a1a1a;
+          border-radius: 0.5rem;
+          border: 1px solid #333;
+          overflow: hidden;
+      }
+
+      .table {
+          width: 100%;
+          border-collapse: collapse;
+      }
+
+      .table th,
+      .table td {
+          padding: 1rem;
+          text-align: left;
+          border-bottom: 1px solid #333;
+      }
+
+      .table th {
+          background-color: #111;
+          font-weight: 600;
+          color: #fff;
+          font-size: 0.875rem;
+      }
+
+      .table td {
+          color: #d1d5db;
+      }
+
+      .table tbody tr:hover {
+          background-color: #222;
+      }
+
+      .table tbody tr:last-child td {
+          border-bottom: none;
+      }
+
+      /* Status Badge */
+      .status-badge {
+          display: inline-flex;
+          align-items: center;
+          padding: 0.25rem 0.75rem;
+          border-radius: 9999px;
+          font-size: 0.75rem;
+          font-weight: 500;
+      }
+
+      .status-active {
+          background-color: rgba(34, 197, 94, 0.1);
+          color: #22c55e;
+      }
+
+      .status-blocked {
+          background-color: rgba(239, 68, 68, 0.1);
+          color: #ef4444;
+      }
+
+      /* Search Section */
+      .search-section {
+          margin-bottom: 2rem;
+      }
+
+      /* Mobile Responsiveness */
+      @media (max-width: 768px) {
+          .sidebar {
+              width: 100%;
+              position: relative;
+              height: auto;
+              border-right: none;
+              padding-bottom: 1rem;
+          }
+
+          .main-content, .header {
+              margin-left: 0;
+          }
+
+          .table-container {
+              overflow-x: auto;
+          }
+
+          .table {
+              min-width: 600px;
+          }
+      }
+  </style>
+</head>
+<body>
+    <div class="dashboard-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <a href="admin-dashboard.html" class="sidebar-logo">Ver<span class="faded">mento</span></a>
+            <nav class="sidebar-nav">
+                <div class="sidebar-nav-item">
+                    <a href="admin-dashboard.html" class="sidebar-nav-link">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                        <span>Dashboard</span>
+                    </a>
+                </div>
+                <div class="sidebar-nav-item">
+                    <a href="user-management.html" class="sidebar-nav-link active">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                        <span>User Management</span>
+                    </a>
+                </div>
+                <div class="sidebar-nav-item">
+                    <a href="mentor-management.html" class="sidebar-nav-link">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                        <span>Mentor Management</span>
+                    </a>
+                </div>
+                <div class="sidebar-nav-item">
+                    <a href="#bookings" class="sidebar-nav-link">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/><path d="M12 16h.01"/><path d="M8 16h.01"/><path d="M16 16h.01"/><path d="M12 12h.01"/><path d="M8 12h.01"/><path d="M16 12h.01"/></svg>
+                        <span>View & Manage Bookings</span>
+                    </a>
+                </div>
+                <div class="sidebar-nav-item">
+                    <a href="#wallet" class="sidebar-nav-link">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h12a2 2 0 0 1 0 4H5a2 2 0 0 0 0 4h12a2 2 0 0 0 2-2v-3"/><path d="M10 12H7a2 2 0 0 0-2 2v4a2 2 0 0 0 2 2h3"/></svg>
+                        <span>Financial Overview</span>
+                    </a>
+                </div>
+            </nav>
+            <div class="sidebar-footer">
+                <div class="sidebar-nav-item">
+                    <a href="/admin-profile.html" class="sidebar-nav-link">
+                        <span class="avatar h-6 w-6">
+                            <img src="https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=400" alt="Admin Profile" class="avatar-image" />
+                            <span class="avatar-fallback">AS</span>
+                        </span>
+                        <span>Admin Smith</span>
+                    </a>
+                </div>
+                <div class="sidebar-nav-item">
+                    <a href="/logout" class="sidebar-nav-link">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="17 16 22 12 17 8"/><line x1="22" x2="10" y1="12" y2="12"/></svg>
+                        <span>Logout</span>
+                    </a>
+                </div>
+            </div>
+        </aside>
+
+        <div style="flex: 1; display: flex; flex-direction: column;">
+            <!-- Header -->
+            <header class="header">
+                <div class="relative w-64">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                    <input type="text" placeholder="Search users..." class="input pl-9" id="globalSearch" />
+                </div>
+                <div class="nav-buttons">
+                    <a href="#" class="btn-ghost">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-6 w-6 text-white"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.36 14H13.64a2 2 0 0 1 2 1.73 2 2 0 0 0 2 1.73H6.36a2 2 0 0 0 2 1.73 2 2 0 0 1 2-1.73Z"/></svg>
+                    </a>
+                    <span class="avatar h-9 w-9">
+                        <img src="https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=400" alt="Admin Profile" class="avatar-image" />
+                        <span class="avatar-fallback">AS</span>
+                    </span>
+                    <span class="font-medium text-white">Admin Smith</span>
+                </div>
+            </header>
+
+            <!-- Main Content Area -->
+            <main class="main-content">
+                <div class="flex items-center justify-between mb-8">
+                    <h1 class="text-3xl font-bold text-white">User Management</h1>
+                    <div class="flex items-center gap-4">
+                        <span class="text-gray-400">Total Users: <span class="text-white font-semibold">1,247</span></span>
+                    </div>
+                </div>
+
+                <!-- Search Section -->
+                <div class="search-section">
+                    <div class="relative w-full">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                        <input type="text" placeholder="Search users by name, email, or ID..." class="input pl-9" id="userSearch" />
+                    </div>
+                </div>
+
+                <!-- Users Table -->
+                <div class="table-container">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>User</th>
+                                <th>Email</th>
+                                <th>Join Date</th>
+                                <th>Status</th>
+                                <th>Sessions</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="usersTableBody">
+                            <tr>
+                                <td>
+                                    <div class="flex items-center gap-3">
+                                        <span class="avatar h-10 w-10">
+                                            <img src="https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=400" alt="User" class="avatar-image" />
+                                            <span class="avatar-fallback">AJ</span>
+                                        </span>
+                                        <div>
+                                            <div class="font-medium text-white">Alice Johnson</div>
+                                            <div class="text-sm text-gray-400">ID: USR001</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="text-gray-400">alice.johnson@email.com</td>
+                                <td class="text-gray-400">Jan 15, 2024</td>
+                                <td>
+                                    <span class="status-badge status-active">Active</span>
+                                </td>
+                                <td class="text-gray-400">12</td>
+                                <td>
+                                    <div class="flex items-center gap-2">
+                                        <button class="btn btn-sm btn-primary" onclick="viewUser('USR001')">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-1"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                                            View
+                                        </button>
+                                        <button class="btn btn-sm btn-danger" onclick="toggleUserStatus('USR001', 'block')">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-1"><circle cx="12" cy="12" r="10"/><path d="m4.9 4.9 14.2 14.2"/></svg>
+                                            Block
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="flex items-center gap-3">
+                                        <span class="avatar h-10 w-10">
+                                            <img src="https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=400" alt="User" class="avatar-image" />
+                                            <span class="avatar-fallback">BS</span>
+                                        </span>
+                                        <div>
+                                            <div class="font-medium text-white">Bob Smith</div>
+                                            <div class="text-sm text-gray-400">ID: USR002</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="text-gray-400">bob.smith@email.com</td>
+                                <td class="text-gray-400">Feb 3, 2024</td>
+                                <td>
+                                    <span class="status-badge status-blocked">Blocked</span>
+                                </td>
+                                <td class="text-gray-400">5</td>
+                                <td>
+                                    <div class="flex items-center gap-2">
+                                        <button class="btn btn-sm btn-primary" onclick="viewUser('USR002')">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-1"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                                            View
+                                        </button>
+                                        <button class="btn btn-sm btn-success" onclick="toggleUserStatus('USR002', 'unblock')">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-1"><path d="M7 10v12"/><path d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2h0a3.13 3.13 0 0 1 3 3.88Z"/></svg>
+                                            Unblock
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="flex items-center gap-3">
+                                        <span class="avatar h-10 w-10">
+                                            <img src="https://images.pexels.com/photos/1181686/pexels-photo-1181686.jpeg?auto=compress&cs=tinysrgb&w=400" alt="User" class="avatar-image" />
+                                            <span class="avatar-fallback">CD</span>
+                                        </span>
+                                        <div>
+                                            <div class="font-medium text-white">Carol Davis</div>
+                                            <div class="text-sm text-gray-400">ID: USR003</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="text-gray-400">carol.davis@email.com</td>
+                                <td class="text-gray-400">Mar 12, 2024</td>
+                                <td>
+                                    <span class="status-badge status-active">Active</span>
+                                </td>
+                                <td class="text-gray-400">8</td>
+                                <td>
+                                    <div class="flex items-center gap-2">
+                                        <button class="btn btn-sm btn-primary" onclick="viewUser('USR003')">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-1"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                                            View
+                                        </button>
+                                        <button class="btn btn-sm btn-danger" onclick="toggleUserStatus('USR003', 'block')">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-1"><circle cx="12" cy="12" r="10"/><path d="m4.9 4.9 14.2 14.2"/></svg>
+                                            Block
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="flex items-center gap-3">
+                                        <span class="avatar h-10 w-10">
+                                            <img src="https://images.pexels.com/photos/1043471/pexels-photo-1043471.jpeg?auto=compress&cs=tinysrgb&w=400" alt="User" class="avatar-image" />
+                                            <span class="avatar-fallback">DW</span>
+                                        </span>
+                                        <div>
+                                            <div class="font-medium text-white">David Wilson</div>
+                                            <div class="text-sm text-gray-400">ID: USR004</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="text-gray-400">david.wilson@email.com</td>
+                                <td class="text-gray-400">Apr 8, 2024</td>
+                                <td>
+                                    <span class="status-badge status-active">Active</span>
+                                </td>
+                                <td class="text-gray-400">15</td>
+                                <td>
+                                    <div class="flex items-center gap-2">
+                                        <button class="btn btn-sm btn-primary" onclick="viewUser('USR004')">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-1"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                                            View
+                                        </button>
+                                        <button class="btn btn-sm btn-danger" onclick="toggleUserStatus('USR004', 'block')">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-1"><circle cx="12" cy="12" r="10"/><path d="m4.9 4.9 14.2 14.2"/></svg>
+                                            Block
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="flex items-center gap-3">
+                                        <span class="avatar h-10 w-10">
+                                            <img src="https://images.pexels.com/photos/1181424/pexels-photo-1181424.jpeg?auto=compress&cs=tinysrgb&w=400" alt="User" class="avatar-image" />
+                                            <span class="avatar-fallback">EM</span>
+                                        </span>
+                                        <div>
+                                            <div class="font-medium text-white">Emma Miller</div>
+                                            <div class="text-sm text-gray-400">ID: USR005</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="text-gray-400">emma.miller@email.com</td>
+                                <td class="text-gray-400">May 20, 2024</td>
+                                <td>
+                                    <span class="status-badge status-active">Active</span>
+                                </td>
+                                <td class="text-gray-400">3</td>
+                                <td>
+                                    <div class="flex items-center gap-2">
+                                        <button class="btn btn-sm btn-primary" onclick="viewUser('USR005')">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-1"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                                            View
+                                        </button>
+                                        <button class="btn btn-sm btn-danger" onclick="toggleUserStatus('USR005', 'block')">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-1"><circle cx="12" cy="12" r="10"/><path d="m4.9 4.9 14.2 14.2"/></svg>
+                                            Block
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        // Search functionality
+        document.getElementById('userSearch').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const tableRows = document.querySelectorAll('#usersTableBody tr');
+            
+            tableRows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                if (text.includes(searchTerm)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        });
+
+        // Global search functionality
+        document.getElementById('globalSearch').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const tableRows = document.querySelectorAll('#usersTableBody tr');
+            
+            tableRows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                if (text.includes(searchTerm)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        });
+
+        // View user function
+        function viewUser(userId) {
+            alert(`Viewing details for user: ${userId}`);
+            // In a real application, this would open a modal or navigate to a user detail page
+        }
+
+        // Toggle user status function
+        function toggleUserStatus(userId, action) {
+            const row = event.target.closest('tr');
+            const statusBadge = row.querySelector('.status-badge');
+            const actionButton = event.target.closest('button');
+            
+            if (action === 'block') {
+                if (confirm(`Are you sure you want to block user ${userId}?`)) {
+                    statusBadge.textContent = 'Blocked';
+                    statusBadge.className = 'status-badge status-blocked';
+                    actionButton.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-1"><path d="M7 10v12"/><path d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2h0a3.13 3.13 0 0 1 3 3.88Z"/></svg>Unblock';
+                    actionButton.className = 'btn btn-sm btn-success';
+                    actionButton.setAttribute('onclick', `toggleUserStatus('${userId}', 'unblock')`);
+                }
+            } else if (action === 'unblock') {
+                if (confirm(`Are you sure you want to unblock user ${userId}?`)) {
+                    statusBadge.textContent = 'Active';
+                    statusBadge.className = 'status-badge status-active';
+                    actionButton.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-1"><circle cx="12" cy="12" r="10"/><path d="m4.9 4.9 14.2 14.2"/></svg>Block';
+                    actionButton.className = 'btn btn-sm btn-danger';
+                    actionButton.setAttribute('onclick', `toggleUserStatus('${userId}', 'block')`);
+                }
+            }
+        }
+    </script>
+</body>
+</html>
